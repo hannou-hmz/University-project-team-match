@@ -15,13 +15,12 @@ async function getAdvisors(){
 async function createAdvisorRow(advisorId){
 
     try{
-        const sql = "INSERT INTO advisors(advisor_id) values(?)";
+        const sql = "INSERT IGNORE INTO advisors (advisor_id) VALUES (?)";
         const [result] = await database.pool.execute(sql , [advisorId]);
     }catch(e){
-        console.log(`Student row insertion error : ${e.message}`);
+        console.log(e.message);
         throw e;
     }
-
 }
 
 async function getAdvisorProfileInfo(advisorId){
@@ -37,6 +36,7 @@ async function getAdvisorProfileInfo(advisorId){
         console.log(`Finding advisor information : ${e.message}`);
     }
 }
+
 
 async function requestAdvisor(advisorId, projectId , studentId , message , meetingMethod){
 

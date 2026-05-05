@@ -28,7 +28,7 @@
     <!-- Form card -->
     <div class="form-card">
 
-        <form method="POST" action="/signup">
+        <form method="POST" action="/signup" id="signup-form" novalidate>
 
             <!-- Role Selector -->
             <div class="field-group">
@@ -51,11 +51,13 @@
             <div class="field-row">
                 <div class="field-group">
                     <label class="field-label">Full Name</label>
-                    <input class="field-input" type="text" name="username" placeholder="e.g. Alex Johnson" required>
+                    <input class="field-input" type="text" name="username" id="username" placeholder="e.g. Alex Johnson" required>
+                    <span class="field-error" id="error-username"></span>
                 </div>
                 <div class="field-group">
                     <label class="field-label">Email Address</label>
-                    <input class="field-input" type="email" name="email" placeholder="you@university.edu" required>
+                    <input class="field-input" type="email" name="email" id="email" placeholder="you@university.edu" required>
+                    <span class="field-error" id="error-email"></span>
                 </div>
             </div>
 
@@ -63,7 +65,7 @@
             <div class="field-row">
                 <div class="field-group">
                     <label class="field-label">Department</label>
-                    <select class="field-input field-select" name="department" required>
+                    <select class="field-input field-select" name="department" id="department" required>
                         <option value="">Select department</option>
                         <option value="302">Computer Science</option>
                         <option value="405">Industrial Engineering</option>
@@ -72,10 +74,12 @@
                         <option value="101">Chemical Engineering</option>
                         <option value="111">Electrical Engineering</option>
                     </select>
+                    <span class="field-error" id="error-department"></span>
                 </div>
                 <div class="field-group">
                     <label class="field-label">Age</label>
-                    <input class="field-input" type="number" name="age" placeholder="e.g. 21" required>
+                    <input class="field-input" type="number" name="age" id="age" placeholder="e.g. 21" required>
+                    <span class="field-error" id="error-age"></span>
                 </div>
             </div>
 
@@ -83,11 +87,13 @@
             <div class="field-row">
                 <div class="field-group">
                     <label class="field-label">Password</label>
-                    <input class="field-input" type="password" name="password" placeholder="Create a password" required>
+                    <input class="field-input" type="password" name="password" id="password" placeholder="Create a password" required>
+                    <span class="field-error" id="error-password"></span>
                 </div>
                 <div class="field-group">
                     <label class="field-label">Confirm Password</label>
-                    <input class="field-input" type="password" name="confirm_password" placeholder="Repeat password" required>
+                    <input class="field-input" type="password" name="confirm_password" id="confirm_password" placeholder="Repeat password" required>
+                    <span class="field-error" id="error-confirm"></span>
                 </div>
             </div>
 
@@ -102,18 +108,122 @@
 </div>
 
 <script>
+  /* ── Role toggle (unchanged) ── */
   const roles = document.querySelectorAll('.role');
   const input = document.getElementById('role');
 
   roles.forEach(div => {
     div.addEventListener('click', () => {
       const role = div.dataset.role;
-
       input.value = role;
-
       roles.forEach(r => r.classList.remove('active'));
       div.classList.add('active');
     });
+  });
+
+  /* ── Validation helpers ── */
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.toggle('visible', !!msg);
+  }
+
+  function clearAllErrors() {
+    document.querySelectorAll('.field-error').forEach(el => {
+      el.textContent = '';
+      el.classList.remove('visible');
+    });
+    document.querySelectorAll('.field-input').forEach(el => {
+      el.classList.remove('input-error');
+    });
+  }
+
+  function markError(fieldId, errorId, msg) {
+    const field = document.getElementById(fieldId);
+    if (field) field.classList.add('input-error');
+    showError(errorId, msg);
+  }
+
+  /* ── Live clear: remove an error as soon as the user starts correcting it ── */
+  ['username', 'email', 'department', 'age', 'password', 'confirm_password'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      el.classList.remove('input-error');
+      const errorEl = document.getElementById('error-' + (id === 'confirm_password' ? 'confirm' : id));
+      if (errorEl) { errorEl.textContent = ''; errorEl.classList.remove('visible'); }
+      /* Re-check confirm match live once the user starts typing in either password field */
+      if (id === 'password' || id === 'confirm_password') {
+        const pw  = document.getElementById('password').value;
+        const cpw = document.getElementById('confirm_password').value;
+        if (cpw && pw && pw !== cpw) {
+          markError('confirm_password', 'error-confirm', 'Passwords do not match.');
+        } else {
+          const cf = document.getElementById('confirm_password');
+          if (cf) cf.classList.remove('input-error');
+          showError('error-confirm', '');
+        }
+      }
+    });
+  });
+
+  /* ── Form submit validation ── */
+  document.getElementById('signup-form').addEventListener('submit', function(e) {
+    clearAllErrors();
+
+    const username   = document.getElementById('username').value.trim();
+    const email      = document.getElementById('email').value.trim();
+    const department = document.getElementById('department').value;
+    const age        = document.getElementById('age').value.trim();
+    const password   = document.getElementById('password').value;
+    const confirm    = document.getElementById('confirm_password').value;
+
+    let hasError = false;
+
+    if (!username) {
+      markError('username', 'error-username', 'Full name is required.');
+      hasError = true;
+    }
+
+    if (!email) {
+      markError('email', 'error-email', 'Email address is required.');
+      hasError = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      markError('email', 'error-email', 'Please enter a valid email address.');
+      hasError = true;
+    }
+
+    if (!department) {
+      markError('department', 'error-department', 'Please select a department.');
+      hasError = true;
+    }
+
+    if (!age) {
+      markError('age', 'error-age', 'Age is required.');
+      hasError = true;
+    } else if (isNaN(age) || Number(age) < 16 || Number(age) > 100) {
+      markError('age', 'error-age', 'Please enter a valid age (16–100).');
+      hasError = true;
+    }
+
+    if (!password) {
+      markError('password', 'error-password', 'Password is required.');
+      hasError = true;
+    } else if (password.length < 6) {
+      markError('password', 'error-password', 'Password must be at least 6 characters.');
+      hasError = true;
+    }
+
+    if (!confirm) {
+      markError('confirm_password', 'error-confirm', 'Please confirm your password.');
+      hasError = true;
+    } else if (password && password !== confirm) {
+      markError('confirm_password', 'error-confirm', 'Passwords do not match.');
+      hasError = true;
+    }
+
+    if (hasError) e.preventDefault();
   });
 </script>
 

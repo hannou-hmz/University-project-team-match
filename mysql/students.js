@@ -20,10 +20,10 @@ async function getStudentProfileInfo(studentId){
 async function createStudentrRow(advisorId){
 
     try{
-        const sql = "INSERT INTO students(student_id) values(?)";
+        const sql = "INSERT IGNORE INTO students(student_id) values(?)";
         const [result] = await database.pool.execute(sql , [advisorId]);
     }catch(e){
-        console.log(`Student row insertion error : ${e.message}`);
+        console.log(e.message);
         throw e;
     }
 

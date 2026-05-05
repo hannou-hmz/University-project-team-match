@@ -51,9 +51,12 @@ async function getUser(role , email , password){
                 console.log('User found in database.')
                 return rows[0];
             }
+            else{
+                console.log(`User not found in db (Wrong password)`);
+            }
         }
 
-       return rows
+       return null;
     }
     
     catch (e) {
@@ -70,6 +73,22 @@ async function getUserById(userId){
     }
 
     catch(e){
+        throw e;
+    }
+}
+
+async function getUserByEmail(userId){
+    try{
+        const sql = "SELECT email FROM users WHERE user_id = ?";
+        const [result] = await database.pool.execute(sql , [userId]);
+        if(result.length <= 0){
+            console.log(`No user with such email ..`);
+            return false;
+        }
+
+        return result;
+    }catch(e){
+        console.log(e.message);
         throw e;
     }
 }
@@ -155,6 +174,7 @@ async function changeUserRole(role , userId){
         const [result] = await database.pool.execute(sql , [role , userId]);
     }
     catch(e){
+        console.log(e.message);
         throw e;
     }
 }
@@ -171,5 +191,6 @@ module.exports = {
     compareUserPassword,
     resetPassword,
     deleteUsers,
-    changeUserRole
+    changeUserRole,
+    getUserByEmail
 }
