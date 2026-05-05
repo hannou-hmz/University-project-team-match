@@ -9,6 +9,7 @@ const {getAdmin , getAllUsers , deleteUsers, getUsersRoles , changeUserRole} = r
 const {getCategories ,addCategory, deleteCategory} = require('../mysql/categories');
 const {addAnnouncement , getAnnouncements , deleteAnnouncement} = require('../mysql/announcements');
 const {createProjects , getProjects , myProjects , deleteProjects} = require('../mysql/projects');
+const {createAdvisorRow} = require('../mysql/advisors');
 
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
@@ -206,13 +207,22 @@ adminRouters.get('/users/roles' , isAdmin , async(req , res)=>{
 adminRouters.patch('/:userId/change-role' , isAdmin , async(req , res)=>{
     try{
         const userId = req.params.userId;
-        const newRole = req.body.roleId;
+        const newRole = Number(req.body.roleId);
+        if(newRole === 2){
+            const result = await changeUserRole(newRole , userId);
+            const newAdvisor = await createAdvisorRow(userId);
 
-        const result = await changeUserRole(newRole , userId);
-        return res.redirect("/admin/users/roles");
-    }
-    catch(e){
-         console.log(e.message);
+            return res.redirect("/admin/users/roles");
+        }
+        else if(newRole === 3){
+            const result = await changeUserRole(newRole , userId);
+            return res.redirect("/admin/users/roles");
+        }
+        else{
+            return res.status(500).render("500-admin");
+        }
+    }catch(e){
+        console.log(e.message);
         return res.status(500).render("500-admin");
     }
 });

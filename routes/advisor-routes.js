@@ -31,6 +31,8 @@ advisorRouters.get('/dashboard' , isAdvisor, async(req , res)=>{
         const accepted = await countAcceptedRequests(advisorId);
         const rejected = await countRejectedRequests(advisorId);
         const pending = await countPendingRequests(advisorId);
+        console.log(advisor);
+        console.log(advisorInfos);
         return res.render("advisor-homepage" , {
             advisor : advisor ,
             pending : pendingReq,
@@ -62,18 +64,18 @@ advisorRouters.get('/requests' , isAdvisor , async(req , res)=>{
 
 });
 
-advisorRouters.get('/requests/rejected' , isAdvisor , async(req , res)=>{
-    try{
-        const advisorId = req.session.advisorId;
-        const accepted = await getRejectedRequests(advisorId);
+// advisorRouters.get('/requests/rejected' , isAdvisor , async(req , res)=>{
+//     try{
+//         const advisorId = req.session.advisorId;
+//         const accepted = await getRejectedRequests(advisorId);
 
-        return res.render("advisor-rejected-requests");
+//         return res.render("advisor-rejected-requests");
 
-    }catch(e){
-        console.log(e.message);
-        return res.status(500).render("500");
-    }
-}) // no front-end no planning (either in dashboard , or in projects section)
+//     }catch(e){
+//         console.log(e.message);
+//         return res.status(500).render("500");
+//     }
+// }) // no front-end no planning (either in dashboard , or in projects section)
 
 advisorRouters.patch('/requests/:requestId/accept' , isAdvisor , async(req , res)=>{
     
@@ -135,7 +137,6 @@ advisorRouters.get('/profile' , isAdvisor , async(req , res)=>{
         const advisorId = req.session.advisorId;
         const advisorInfos = await getAdvisorProfileInfo(advisorId);
 
-        console.log(advisorInfos);
         return res.render("advisor-profile" , {
             advisor : advisorInfos
         });

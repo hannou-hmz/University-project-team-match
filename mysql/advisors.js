@@ -5,9 +5,8 @@ async function getAdvisors(){
         const sql = "select u.user_id , u.full_name , u.email , d.department_name , a.areas_of_expertise , a.available FROM users AS u INNER JOIN departments AS d INNER JOIN advisors AS a ON u.user_id = a.advisor_id AND d.department_id = u.department"
         const [rows] = await database.pool.execute(sql);
         return rows;
-    }
 
-    catch(e){
+    }catch(e){
         console.log(`Get advisors error : ${e.message}`);
         throw e;
     }
@@ -18,9 +17,7 @@ async function createAdvisorRow(advisorId){
     try{
         const sql = "INSERT INTO advisors(advisor_id) values(?)";
         const [result] = await database.pool.execute(sql , [advisorId]);
-    }
-    
-    catch(e){
+    }catch(e){
         console.log(`Student row insertion error : ${e.message}`);
         throw e;
     }
