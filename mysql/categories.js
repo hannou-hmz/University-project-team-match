@@ -38,9 +38,24 @@ async function addCategory(name, description){
         throw e;
     }
 }
+async function updateCategory(id , name,  description){
+    try{
+        const sql = "UPDATE categories SET category_name = ? , category_description = ? WHERE category_id = ?";
+        const [result] = await database.pool.execute(sql , [name , description , id]);
+        if(result.affectedRows < 0){
+            throw Error(`Update categories failed !`);
+        }
+
+        console.log(`Updated successefully ..`);
+        return result;     
+    }catch(e){
+        throw e;
+    }
+}
 
 module.exports = {
     getCategories,
     addCategory,
-    deleteCategory
+    deleteCategory,
+    updateCategory
 }

@@ -16,17 +16,17 @@
 <nav class="navbar">
     <a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
     <div class="nav-links">
-        <a href="/student/projects" class="nav-link">Browse Projects</a>
-        <a href="/student/myprojects" class="nav-link">My Projects</a>
+        <a href="/student/projects"     class="nav-link">Browse Projects</a>
+        <a href="/student/myprojects"   class="nav-link">My Projects</a>
         <a href="/student/applications" class="nav-link">My Applications</a>
         <a href="/student/announcements" class="nav-link">Announcements</a>
         <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
-        <a href="/student/requests" class="nav-link">Advisor Requests</a>
-        <a href="/student/applicants" class="nav-link">Applicants</a>
+        <a href="/student/requests"     class="nav-link">Advisor Requests</a>
+        <a href="/student/applicants"   class="nav-link">Applicants</a>
     </div>
     <div class="nav-actions">
         <a href="/student/profile" class="nav-btn-outline">Profile</a>
-        <a href="/logout" class="nav-btn-logout">Logout</a>
+        <a href="/logout"          class="nav-btn-logout">Logout</a>
     </div>
 </nav>
 
@@ -46,7 +46,8 @@
         <!-- Toolbar -->
         <div class="toolbar">
             <span class="results-count">
-                <strong><%= announcements.length %></strong> announcement<%= announcements.length !== 1 ? 's' : '' %>
+                <strong><%= announcements.length %></strong>
+                announcement<%= announcements.length !== 1 ? 's' : '' %>
                 <% const urgentCount = announcements.filter(a => a.is_urgent).length; %>
                 <% if (urgentCount > 0) { %>
                     · <span class="urgent-count"><%= urgentCount %> urgent</span>
@@ -59,39 +60,56 @@
             </label>
         </div>
 
-        <!-- Announcements List -->
+        <!-- Announcements Grid -->
         <div class="ann-list" id="annList">
 
             <% announcements.forEach(ann => { %>
             <div class="ann-card <%= ann.is_urgent ? 'is-urgent' : '' %>"
-                    data-urgent="<%= ann.is_urgent ? 'true' : 'false' %>">
+                 data-urgent="<%= ann.is_urgent ? 'true' : 'false' %>">
 
                 <!-- Urgent banner -->
                 <% if (ann.is_urgent) { %>
                 <div class="urgent-banner">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9"  x2="12"   y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
                     Urgent
                 </div>
                 <% } %>
 
                 <div class="ann-body">
 
-                    <!-- Header -->
-                    <div class="ann-header">
-                        <div class="ann-header-left">
-                            <h3 class="ann-title"><%= ann.title %></h3>
-                            <div class="ann-meta-row">
-                                <span class="ann-badge"><%= ann.category_name %></span>
-                                <span class="ann-date">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                    <%= new Date(ann.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
-                                </span>
-                            </div>
-                        </div>
+                    <!-- Meta row -->
+                    <div class="ann-meta-row">
+                        <span class="ann-badge"><%= ann.category_name %></span>
+                        <span class="ann-date">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2"  x2="16" y2="6"/>
+                                <line x1="8"  y1="2"  x2="8"  y2="6"/>
+                                <line x1="3"  y1="10" x2="21" y2="10"/>
+                            </svg>
+                            <%= new Date(ann.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                        </span>
                     </div>
 
-                    <!-- Description -->
-                    <p class="ann-desc"><%= ann.description %></p>
+                    <!-- Title -->
+                    <h3 class="ann-title"><%= ann.title %></h3>
+
+                    <!-- Description with show more / less -->
+                    <div class="ann-desc-wrap">
+                        <p class="ann-desc"><%= ann.description %></p>
+                        <button class="ann-toggle-btn" aria-expanded="false">
+                            <span class="btn-label">Show more</span>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2.5"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </button>
+                    </div>
 
                 </div>
 
@@ -100,10 +118,14 @@
 
         </div>
 
-        <!-- Empty filter state -->
+        <!-- Empty filter state (shown when urgent filter has no results) -->
         <div class="empty-state" id="emptyState" style="display:none;">
             <div class="empty-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
             </div>
             <div class="empty-title">No urgent announcements</div>
             <div class="empty-sub">All clear — nothing marked as urgent right now.</div>
@@ -111,10 +133,14 @@
 
     <% } else { %>
 
-        <!-- Empty State -->
+        <!-- Empty State (no announcements at all) -->
         <div class="empty-state">
             <div class="empty-icon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
             </div>
             <div class="empty-title">No announcements yet</div>
             <p class="empty-sub">Nothing to show right now. Check back later for platform updates.</p>
@@ -132,6 +158,8 @@
 </footer>
 
 <script>
+(function () {
+    /* ── URGENT FILTER ───────────────────── */
     const urgentOnly = document.getElementById('urgentOnly');
     const cards      = document.querySelectorAll('.ann-card');
     const emptyState = document.getElementById('emptyState');
@@ -143,14 +171,49 @@
 
             cards.forEach(card => {
                 const isUrgent = card.dataset.urgent === 'true';
-                const show = !onlyUrgent || isUrgent;
+                const show     = !onlyUrgent || isUrgent;
                 card.style.display = show ? '' : 'none';
                 if (show) visible++;
             });
 
-            if (emptyState) emptyState.style.display = visible === 0 ? 'flex' : 'none';
+            if (emptyState) {
+                emptyState.style.display = visible === 0 ? 'flex' : 'none';
+            }
         });
     }
+
+    /* ── SHOW MORE / SHOW LESS ───────────── */
+    const LINE_HEIGHT   = 1.75;   // must match CSS line-height
+    const FONT_SIZE_PX  = 14;     // 0.88rem ≈ 14px
+    const CLAMP_LINES   = 4;
+    const CLAMP_HEIGHT  = LINE_HEIGHT * FONT_SIZE_PX * CLAMP_LINES; // ~98px
+
+    document.querySelectorAll('.ann-desc-wrap').forEach(wrap => {
+        const desc   = wrap.querySelector('.ann-desc');
+        const btn    = wrap.querySelector('.ann-toggle-btn');
+        const label  = btn.querySelector('.btn-label');
+
+        /* Check once if the text actually overflows the clamped height.
+           We temporarily uncollapse to measure the full scrollHeight. */
+        desc.classList.add('is-expanded');
+        const fullHeight = desc.scrollHeight;
+        desc.classList.remove('is-expanded');
+
+        /* If content fits within 4 lines, hide the toggle button */
+        if (fullHeight <= CLAMP_HEIGHT + 4) {   /* +4px tolerance */
+            btn.classList.add('hidden');
+            return;
+        }
+
+        /* Toggle expand / collapse */
+        btn.addEventListener('click', () => {
+            const expanded = desc.classList.toggle('is-expanded');
+            btn.classList.toggle('is-open', expanded);
+            btn.setAttribute('aria-expanded', expanded);
+            label.textContent = expanded ? 'Show less' : 'Show more';
+        });
+    });
+})();
 </script>
 
 </body>

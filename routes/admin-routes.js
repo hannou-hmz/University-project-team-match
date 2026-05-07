@@ -10,6 +10,7 @@ const {getCategories ,addCategory, deleteCategory} = require('../mysql/categorie
 const {addAnnouncement , getAnnouncements , deleteAnnouncement} = require('../mysql/announcements');
 const {createProjects , getProjects , myProjects , deleteProjects} = require('../mysql/projects');
 const {createAdvisorRow} = require('../mysql/advisors');
+const {addDepartment , getDeparments , deleteDepartment} = require('../mysql/admins');
 
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
@@ -184,6 +185,40 @@ adminRouters.get('/categories/:categoryId/delete' , isAdmin , async(req , res)=>
     }
 
     catch(e){
+        console.log(`Error : ${e.message}`);
+        return res.status(500).render("500-admin");
+    }
+});
+
+adminRouters.get('/departments' , isAdmin , async(req , res)=>{
+    try{
+        const departments = await getDeparments();
+        return res.render('admin-departments' , {
+            departments : departments
+        });
+    }catch(e){
+        console.log(e.message);
+        return res.status(500).render("500-admin");
+    }
+});
+
+adminRouters.post('/departments/add' , isAdmin , async(req , res)=>{
+    try{
+        const {departmentName} = req.body;
+        const newDepartment = await addDepartment(departmentName);
+        return res.redirect('/admin/departments');
+    }catch(e){
+        console.log(`Error : ${e.message}`);
+        return res.status(500).render("500-admin");
+    }
+});
+
+adminRouters.delete('/departments/:departmentId/delete' , isAdmin , async(req , res)=>{
+    try{
+        const departmentId = req.params.departmentId;
+        const result = await deleteDepartment(departmentId);
+        return res.redirect('/admin/departments');
+    }catch(e){
         console.log(`Error : ${e.message}`);
         return res.status(500).render("500-admin");
     }

@@ -32,7 +32,7 @@ async function createStudentrRow(advisorId){
 async function getMyAdvisorRequests(studentId){
 
     try{
-        const sql = "SELECT a.request_id , sp.project_title, sp.project_description , c.category_name , a.request_message , a.meeting_method , a.status , a.requested_at FROM advisor_requests AS a INNER JOIN student_projects AS sp INNER JOIN categories AS c ON  c.category_id = sp.project_type AND sp.project_id = a.project_id WHERE a.student_id = ?";
+        const sql = "SELECT a.request_id , u.full_name , sp.project_title, sp.project_description , c.category_name , a.request_message , a.meeting_method , a.status , a.requested_at FROM advisor_requests AS a INNER JOIN users AS u ON u.user_id = a.advisor_id INNER JOIN student_projects AS sp ON sp.project_id = a.project_id INNER JOIN categories AS c ON  c.category_id = sp.project_type  WHERE a.student_id = ?";
         const [rows] = await database.pool.execute(sql , [studentId]);
         return rows;
     }

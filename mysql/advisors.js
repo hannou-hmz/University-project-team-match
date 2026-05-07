@@ -37,7 +37,6 @@ async function getAdvisorProfileInfo(advisorId){
     }
 }
 
-
 async function requestAdvisor(advisorId, projectId , studentId , message , meetingMethod){
 
     try{
