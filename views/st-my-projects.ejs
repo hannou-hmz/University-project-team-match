@@ -51,11 +51,14 @@
         <a href="/student/create/projects" class="btn-primary">+ Create New Project</a>
     </div>
 
-    <!-- Projects List -->
-    <div class="projects-list">
+    <!-- Projects Grid -->
+    <div class="projects-grid">
 
-        <% projects.forEach(project => { %>
-        <div class="project-card">
+        <% projects.forEach((project, i) => { %>
+        <div class="project-card" style="animation-delay: <%= i * 0.05 %>s">
+
+            <!-- Top accent stripe -->
+            <div class="pc-stripe"></div>
 
             <div class="pc-body">
 
@@ -72,7 +75,7 @@
                         </div>
                     </div>
 
-                    <!-- Delete button — triggers custom modal -->
+                    <!-- Delete button -->
                     <form action="/student/my-projects/<%= project.project_id %>/delete?_method=DELETE" method="POST">
                         <button class="delete-btn"
                             data-title="<%= project.project_title %>"
@@ -89,8 +92,14 @@
                     Created by <strong><%= project.full_name %></strong>
                 </div>
 
-                <!-- Description -->
-                <p class="pc-desc"><%= project.project_description %></p>
+                <!-- Description with show more/less -->
+                <div class="pc-desc-wrap">
+                    <p class="pc-desc collapsed" data-desc-text><%= project.project_description %></p>
+                    <button class="desc-toggle" data-desc-toggle style="display:none">
+                        Show more
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                </div>
 
                 <!-- Skills tags -->
                 <% if (project.required_skills) { %>
@@ -178,6 +187,7 @@
 </div>
 
 <script>
+/* ── Delete Modal ── */
 function openDeleteModal(btn) {
     const title = btn.dataset.title;
     const href  = btn.dataset.href;
@@ -197,7 +207,33 @@ function closeDeleteModal() {
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeDeleteModal();
 });
+
+/* ── Show More / Show Less for descriptions ── */
+document.querySelectorAll('[data-desc-text]').forEach(p => {
+    const toggle = p.parentElement.querySelector('[data-desc-toggle]');
+    if (!toggle) return;
+
+    requestAnimationFrame(() => {
+        if (p.scrollHeight > p.clientHeight + 2) {
+            toggle.style.display = 'inline-flex';
+        }
+    });
+
+    toggle.addEventListener('click', () => {
+        const isCollapsed = p.classList.contains('collapsed');
+        if (isCollapsed) {
+            p.classList.replace('collapsed', 'expanded');
+            toggle.classList.add('expanded');
+            toggle.childNodes[0].textContent = 'Show less';
+        } else {
+            p.classList.replace('expanded', 'collapsed');
+            toggle.classList.remove('expanded');
+            toggle.childNodes[0].textContent = 'Show more';
+        }
+    });
+});
 </script>
 
 </body>
 </html>
+ 
