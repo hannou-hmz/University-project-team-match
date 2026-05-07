@@ -18,7 +18,7 @@ async function getProjects(){
     try{
         const sql = "SELECT p.created_by , p.project_id , p.project_title , c.category_name , u.full_name , p.project_description ,p.team_size , p.budget , p.required_skills , p.created_at FROM student_projects AS p INNER JOIN categories AS c INNER JOIN users AS u ON c.category_id = p.project_type AND p.created_by = u.user_id";
         const [rows] = await database.pool.execute(sql);
-
+        
         return rows;
     }
     catch(e){

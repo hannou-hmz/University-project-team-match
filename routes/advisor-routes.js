@@ -25,21 +25,16 @@ function isAdvisor(req, res, next){
 advisorRouters.get('/dashboard' , isAdvisor, async(req , res)=>{
     try{
         const advisorId = req.session.advisorId;
-        const advisor = await getUserById(advisorId);
         const advisorInfos = await getAdvisorProfileInfo(advisorId);
-        const pendingReq = await countPendingRequests(advisorId);
         const accepted = await countAcceptedRequests(advisorId);
         const rejected = await countRejectedRequests(advisorId);
         const pending = await countPendingRequests(advisorId);
-        console.log(advisor);
-        console.log(advisorInfos);
+
         return res.render("advisor-homepage" , {
-            advisor : advisor ,
-            pending : pendingReq,
+            pending : pending,
             advisor : advisorInfos,
-            accepted : accepted[0],
-            rejected : rejected[0],
-            total_pending : pending[0]
+            accepted : accepted,
+            rejected : rejected,
         });
     }catch(e){
         console.log(e.message);
@@ -64,20 +59,6 @@ advisorRouters.get('/requests' , isAdvisor , async(req , res)=>{
 
 });
 
-advisorRouters.get('/requests/rejected' , isAdvisor , async(req , res)=>{
-    try{
-        const advisorId = req.session.advisorId;
-        const rejected = await getRejectedRequests(advisorId);
-
-        return res.render("new-advisor-rejected-reqs" , {
-            requests : rejected
-        });
-    }catch(e){
-        console.log(e.message);
-        return res.status(500).render("500");
-    }
-}) // new front-end required .
-
 advisorRouters.patch('/requests/:requestId/accept' , isAdvisor , async(req , res)=>{
     
     try{
@@ -89,7 +70,7 @@ advisorRouters.patch('/requests/:requestId/accept' , isAdvisor , async(req , res
             return res.status(500).send("500");
         }
 
-        return res.redirect('/advisor/dashboard');
+        return res.redirect('/advisor/projects');
     }
     catch(e){
         return e.message;

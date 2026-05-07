@@ -13,7 +13,7 @@
 <body>
 
 <%
-const isAvailable = !!(advisor.is_available || advisor.is_available);
+const isAvailable = !!(advisor.available || advisor.available);
 %>
 
 <!-- Mobile overlay -->
@@ -46,13 +46,13 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
       <div class="sp-title"><%= advisor.academic_title %></div>
       <% } %>
     </div>
-    <div class="sp-avail-dot <%= isAvailable  ? 'dot-on' : 'dot-off' %>"
-         title="<%= isAvailable  ? 'Available' : 'Unavailable' %>"></div>
+    <div class="sp-avail-dot <%= advisor.available  ? 'dot-on' : 'dot-off' %>"
+         title="<%= advisor.available  ? 'Available' : 'Unavailable' %>"></div>
   </div>
 
   <!-- Availability strip -->
-  <div class="sb-avail-strip <%= isAvailable  ? 'avail-on' : 'avail-off' %>">
-    <span class="sa-label"><%= isAvailable  ? 'Available for advising' : 'Not accepting requests' %></span>
+  <div class="sb-avail-strip <%= advisor.available  ? 'avail-on' : 'avail-off' %>">
+    <span class="sa-label"><%= advisor.available  ? 'Available for advising' : 'Not accepting requests' %></span>
     <a href="/advisor/profile" class="sa-link">Change →</a>
   </div>
 
@@ -124,9 +124,9 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
     <div class="topbar-right">
       <div class="topbar-date" id="topbarDate"></div>
       <div class="tb-sep"></div>
-      <div class="topbar-avail-pill <%= isAvailable ? 'pill-on' : 'pill-off' %>">
+      <div class="topbar-avail-pill <%= advisor.available ? 'pill-on' : 'pill-off' %>">
         <span class="pill-dot"></span>
-        <%= isAvailable? 'Available' : 'Unavailable' %>
+        <%= advisor.available? 'Available' : 'Unavailable' %>
       </div>
     </div>
   </header>
@@ -159,38 +159,38 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
 
     <div class="stats-grid">
 
-      <div class="stat-card sc-green" onclick="accepted()">
+      <div class="stat-card sc-green">
         <div class="stat-top">
           <div class="stat-icon-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <span class="stat-live stat-live-green">● Live</span>
         </div>
-        <div class="stat-num"><%= accepted %></div>
+        <div class="stat-num"><%= accepted.total_accepted_requests %></div>
         <div class="stat-label">Accepted</div>
         <div class="stat-hint">Students currently advising</div>
       </div>
 
-      <div class="stat-card sc-amber" onclick="pending()">
+      <div class="stat-card sc-amber">
         <div class="stat-top">
           <div class="stat-icon-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <span class="stat-live stat-live-amber">● Live</span>
         </div>
-        <div class="stat-num"><%= total_pending %></div>
+        <div class="stat-num"><%= pending.pending_requests %></div>
         <div class="stat-label">Pending</div>
         <div class="stat-hint">Awaiting your response</div>
       </div>
 
-      <div class="stat-card sc-coral" onclick="rejected()">
+      <div class="stat-card sc-coral">
         <div class="stat-top">
           <div class="stat-icon-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </div>
           <span class="stat-live stat-live-coral">● Live</span>
         </div>
-        <div class="stat-num"><%= rejected %></div>
+        <div class="stat-num"><%= rejected.total_rejected_requests %></div>
         <div class="stat-label">Rejected</div>
         <div class="stat-hint">Requests declined</div>
       </div>
@@ -293,17 +293,6 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
     });
   });
 
-  function accepted(){
-    window.location.href = "/advisor/projects";
-  }
-
-  function pending(){
-    window.location.href = "/advisor/requests";
-  }
-
-  function rejected(){
-    window.location.href = "/advisor/requests/rejected";
-  }
 </script>
 
 </body>
