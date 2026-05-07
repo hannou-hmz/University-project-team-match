@@ -46,7 +46,7 @@ async function deleteApplication(applicationId){
 async function getApplicants(userId){
     
     try{
-        const sql = "SELECT a.request_id, a.email , a.request_message , a.request_skills , a.request_date , p.project_title , p.project_type , u.full_name , d.department_name FROM applications AS a INNER JOIN student_projects AS p INNER JOIN users AS u INNER JOIN departments AS d ON a.project_id = p.project_id AND u.user_id = p.created_by AND u.department = d.department_id WHERE u.user_id = ?";
+        const sql = "SELECT a.request_id, a.email, a.request_message, a.request_skills, a.request_date, a.status, p.project_title, c.category_name, u.full_name, d.department_name FROM applications AS a INNER JOIN users AS u ON a.user_id = u.user_id INNER JOIN student_projects AS p ON a.project_id = p.project_id INNER JOIN categories AS c ON c.category_id = p.project_type INNER JOIN departments AS d ON u.department = d.department_id WHERE p.created_by = ?";
         const [rows] = await database.pool.execute(sql , [userId]);   
         return rows;
     }
@@ -60,6 +60,12 @@ async function updateApplicationStatus(stat, requestId ){
     try{
         const sql = "UPDATE applications SET status = ? WHERE request_id = ?";
         const [result] = await database.pool.execute(sql , [stat , requestId]);
+        if(result.affectedRows < 0){
+            console.log(`Status not updated in DB ..`);
+            return null;
+        }
+
+        return true;
 
     }catch(e){
         throw e;

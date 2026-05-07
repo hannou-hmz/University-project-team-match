@@ -1,287 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Applicants · TeamMatch</title>
-  <link rel="stylesheet" href="/student-styling/applicants.css" />
-  <link rel="icon" href="/img/fav.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applicants — TeamMatch</title>
+<link rel="stylesheet" href="/student-styling/applicants.css">
+<link rel="icon" href="/img/fav.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<!-- ═══════════ NAVBAR ═══════════ -->
 <nav class="navbar">
   <a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
-
-  <div class="nav-center">
-    <div class="nav-links" id="navLinks">
-      <a href="/student/projects"      class="nav-link">Browse Projects</a>
-      <a href="/student/myprojects"    class="nav-link">My Projects</a>
-      <a href="/student/applications"  class="nav-link">My Applications</a>
-      <a href="/student/announcements" class="nav-link">Announcements</a>
-      <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
-      <a href="/student/requests"      class="nav-link">Advisor Requests</a>
-      <a href="/student/applicants"    class="nav-link nav-link--active">Applicants</a>
-    </div>
+  <div class="nav-links">
+    <a href="/student/projects"      class="nav-link">Browse Projects</a>
+    <a href="/student/myprojects"    class="nav-link">My Projects</a>
+    <a href="/student/applications"  class="nav-link">My Applications</a>
+    <a href="/student/announcements" class="nav-link">Announcements</a>
+    <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
+    <a href="/student/requests"      class="nav-link">Advisor Requests</a>
+    <a href="/student/applicants"    class="nav-link active">Applicants</a>
   </div>
-
-  <div class="nav-end">
+  <div class="nav-actions">
     <a href="/student/profile" class="nav-btn-outline">Profile</a>
     <a href="/logout"          class="nav-btn-logout">Logout</a>
-    <button class="nav-hamburger" id="navHamburger"
-            aria-label="Toggle navigation" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
-<!-- Mobile drawer -->
-<div class="nav-drawer" id="navDrawer" aria-hidden="true">
-  <a href="/student/projects"      class="drawer-link">Browse Projects</a>
-  <a href="/student/myprojects"    class="drawer-link">My Projects</a>
-  <a href="/student/applications"  class="drawer-link">My Applications</a>
-  <a href="/student/announcements" class="drawer-link">Announcements</a>
-  <a href="/student/find/advisors" class="drawer-link">Find Advisor</a>
-  <a href="/student/requests"      class="drawer-link">Advisor Requests</a>
-  <a href="/student/applicants"    class="drawer-link drawer-link--active">Applicants</a>
+<!-- ═══════════ PAGE HEADER ═══════════ -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-eyebrow">Project Management</div>
+    <h1 class="page-title">Applicants</h1>
+    <p class="page-sub">Review, accept, or reject students who applied to your projects.</p>
+  </div>
 </div>
 
-<!-- ═══════════════════ HEADER ═══════════════════ -->
-<header class="page-header">
-  <div class="page-header__inner">
-    <p  class="page-eyebrow">Project Management</p>
-    <h1 class="page-title">Applicants</h1>
-    <p  class="page-sub">Review and manage students who have applied to join your projects.</p>
-  </div>
-</header>
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="container">
 
-<!-- ═══════════════════ MAIN ═══════════════════ -->
-<main class="container">
+<% if (applicants && applicants.length > 0) { %>
 
-  <% if (applicants && applicants.length > 0) { %>
-
-  <%
-    var total    = applicants.length;
-    var accepted = applicants.filter(function(a){ return (a.status||'pending').toLowerCase() === 'accepted'; }).length;
-    var rejected = applicants.filter(function(a){ return (a.status||'pending').toLowerCase() === 'rejected'; }).length;
-    var pending  = total - accepted - rejected;
-  %>
-
-  <!-- ── Stat tiles ─────────────────────────────── -->
-  <div class="stat-row">
-    <div class="stat-tile stat-tile--all">
-      <span class="stat-n"><%= total %></span>
-      <span class="stat-l">Total</span>
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="results-count">
+        <strong><%= applicants.length %></strong> applicant<%= applicants.length !== 1 ? 's' : '' %>
+      </span>
+      <!-- Live filter tabs -->
+      <div class="filter-tabs">
+        <button class="ftab active" data-filter="all">All</button>
+        <button class="ftab" data-filter="pending">Pending</button>
+        <button class="ftab" data-filter="accepted">Accepted</button>
+        <button class="ftab" data-filter="rejected">Rejected</button>
+      </div>
     </div>
-    <div class="stat-tile stat-tile--pending">
-      <span class="stat-n"><%= pending %></span>
-      <span class="stat-l">Pending</span>
-    </div>
-    <div class="stat-tile stat-tile--accepted">
-      <span class="stat-n"><%= accepted %></span>
-      <span class="stat-l">Accepted</span>
-    </div>
-    <div class="stat-tile stat-tile--rejected">
-      <span class="stat-n"><%= rejected %></span>
-      <span class="stat-l">Rejected</span>
+    <div class="toolbar-right">
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="applicantSearch" placeholder="Search by name or project…">
+      </div>
     </div>
   </div>
 
-  <!-- ── Filter bar ─────────────────────────────── -->
-  <div class="filter-bar" role="tablist">
-    <button class="fbtn fbtn--active" data-filter="all"      role="tab">All      <em><%= total    %></em></button>
-    <button class="fbtn"              data-filter="pending"  role="tab">Pending  <em><%= pending  %></em></button>
-    <button class="fbtn"              data-filter="accepted" role="tab">Accepted <em><%= accepted %></em></button>
-    <button class="fbtn"              data-filter="rejected" role="tab">Rejected <em><%= rejected %></em></button>
-  </div>
+  <!-- Cards Grid -->
+  <div class="applicants-grid" id="applicantsGrid">
 
-  <!-- ── Cards grid ─────────────────────────────── -->
-  <div class="cards-grid" id="cardsGrid">
-
-    <% applicants.forEach(function(app, idx) { %>
+    <% applicants.forEach((applicant, i) => { %>
     <%
-      var s   = (app.status || 'pending').toLowerCase().trim();
-      var mod = s === 'accepted' ? 'card--accepted'
-              : s === 'rejected' ? 'card--rejected'
-              :                    'card--pending';
+      const rawStatus  = applicant.status ? applicant.status.toLowerCase() : 'pending';
+      const statusLabel = rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1);
     %>
+    <div class="applicant-card"
+         data-status="<%= rawStatus %>"
+         data-name="<%= applicant.full_name ? applicant.full_name.toLowerCase() : '' %>"
+         data-project="<%= applicant.project_title ? applicant.project_title.toLowerCase() : '' %>"
+         style="animation-delay: <%= i * 0.05 %>s">
 
-    <article class="app-card <%= mod %>"
-             data-status="<%= s %>"
-             style="animation-delay:<%= idx * 60 %>ms">
+      <!-- Status stripe (top border accent) -->
+      <div class="card-stripe status-stripe-<%= rawStatus %>"></div>
 
-      <!-- Status badge -->
-      <div class="s-badge s-badge--<%= s %>">
-        <% if (s === 'accepted') { %>
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Accepted
-        <% } else if (s === 'rejected') { %>
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Rejected
-        <% } else { %>
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending
-        <% } %>
-      </div>
-
-      <!-- Card head -->
-      <div class="card-head">
-        <div class="c-avatar c-avatar--<%= s %>">
-          <%= app.full_name ? app.full_name.charAt(0).toUpperCase() : (app.email ? app.email.charAt(0).toUpperCase() : '?') %>
-        </div>
-        <div class="c-id">
-          <p class="c-name"><%= app.full_name || app.email %></p>
-          <p class="c-email"><%= app.email %></p>
-        </div>
-      </div>
-
-      <div class="card-divider"></div>
-
-      <!-- Card body -->
       <div class="card-body">
 
-        <!-- Project -->
-        <div class="c-field">
-          <span class="c-label">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Project
-          </span>
-          <div class="c-chip-row">
-            <span class="chip chip--project"><%= app.project_title %></span>
-            <% if (app.project_type) { %>
-              <span class="chip chip--type"><%= app.project_type %></span>
-            <% } %>
+        <!-- ── Top row: avatar + meta + status badge ── -->
+        <div class="card-top">
+          <div class="applicant-avatar">
+            <%= applicant.full_name ? applicant.full_name.charAt(0).toUpperCase() : '?' %>
           </div>
+          <div class="applicant-meta">
+            <h3 class="applicant-name"><%= applicant.full_name %></h3>
+            <span class="applicant-dept"><%= applicant.department_name %></span>
+          </div>
+          <span class="status-pill status-<%= rawStatus %>">
+            <span class="status-dot"></span>
+            <%= statusLabel %>
+          </span>
         </div>
 
-        <!-- Department + Date row -->
-        <div class="c-two-col">
-          <% if (app.department_name) { %>
-          <div class="c-field">
-            <span class="c-label">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-              Department
-            </span>
-            <span class="dept-tag"><%= app.department_name %></span>
+        <!-- ── Project info ── -->
+        <div class="card-project-block">
+          <div class="project-label">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Project
           </div>
-          <% } %>
+          <div class="project-title-text"><%= applicant.project_title %></div>
+          <span class="project-type-tag"><%= applicant.category_name %></span>
+        </div>
 
-          <div class="c-field">
-            <span class="c-label">
+        <!-- ── Info grid ── -->
+        <div class="card-info-grid">
+          <div class="info-cell">
+            <span class="info-label">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email
+            </span>
+            <span class="info-value info-email"><%= applicant.email %></span>
+          </div>
+          <div class="info-cell">
+            <span class="info-label">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               Applied
             </span>
-            <span class="dept-tag">
-              <%= new Date(app.request_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
-            </span>
+            <span class="info-value"><%= new Date(applicant.request_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
           </div>
         </div>
 
-        <!-- Skills -->
-        <% if (app.request_skills) { %>
-        <div class="c-field">
-          <span class="c-label">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <!-- ── Skills ── -->
+        <% if (applicant.request_skills) { %>
+        <div class="card-skills">
+          <span class="info-label">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             Skills
           </span>
-          <div class="skill-tags">
-            <% app.request_skills.split(',').forEach(function(sk){ %>
-              <span class="skill-tag"><%= sk.trim() %></span>
-            <% }); %>
+          <div class="skills-tags">
+            <% applicant.request_skills.split(',').slice(0, 5).forEach(skill => { %>
+              <span class="skill-tag"><%= skill.trim() %></span>
+            <% }) %>
+            <% if (applicant.request_skills.split(',').length > 5) { %>
+              <span class="skill-tag skill-more">+<%= applicant.request_skills.split(',').length - 5 %></span>
+            <% } %>
           </div>
         </div>
         <% } %>
 
-        <!-- Message -->
-        <% if (app.request_message) { %>
-        <div class="c-field">
-          <span class="c-label">
+        <!-- ── Message ── -->
+        <% if (applicant.request_message) { %>
+        <div class="card-message">
+          <div class="message-label">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Message
-          </span>
-          <div class="msg-wrap">
-            <p class="msg-body msg-body--clamped"><%= app.request_message %></p>
-            <button class="msg-toggle" type="button" aria-expanded="false">
-              Show more
-              <svg class="msg-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
           </div>
+          <p class="message-text collapsed" data-msg-text><%= applicant.request_message %></p>
+          <button class="msg-toggle" data-msg-toggle style="display:none">
+            Show more
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
         </div>
         <% } %>
 
-      </div><!-- /card-body -->
+        <!-- ── Action buttons ── -->
+        <div class="card-actions">
 
-      <!-- Card footer — 100 % server-driven status -->
-      <div class="card-foot">
+          <% if (rawStatus === 'pending') { %>
+            <!-- PENDING: show Accept + Reject -->
+            <form action="/student/applicants/<%= applicant.request_id %>/accept?_method=PATCH" method="POST" class="action-form">
+              <input type="hidden" name="_method" value="PATCH">
+              <button type="submit" class="btn-accept">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Accept
+              </button>
+            </form>
+            <form action="/student/applicants/<%= applicant.request_id %>/reject?_method=PATCH" method="POST" class="action-form">
+              <input type="hidden" name="_method" value="PATCH">
+              <button type="submit" class="btn-reject">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Reject
+              </button>
+            </form>
 
-        <% if (s === 'pending') { %>
-          <form action="/student/applicants/<%= app.request_id %>/accept?_method=PATCH" method="POST" class="foot-form">
-            <input type="hidden" name="_method" value="PATCH" />
-            <button type="submit" class="btn-accept">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Accept
-            </button>
-          </form>
-          <form action="/student/applicants/<%= app.request_id %>/reject?_method=PATCH" method="POST" class="foot-form">
-            <input type="hidden" name="_method" value="PATCH" />
-            <button type="submit" class="btn-reject">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Decline
-            </button>
-          </form>
+          <% } else if (rawStatus === 'accepted') { %>
+            <!-- ACCEPTED: show confirmed state + Undo -->
+            <div class="btn-status-confirmed btn-accepted-confirmed">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Application Accepted
+            </div>
+            <form action="/student/applicants/<%= applicant.request_id %>/undo?_method=PATCH" method="POST" class="action-form">
+              <input type="hidden" name="application_status" value="rejected">
+              <button type="submit" class="btn-undo">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.17"/></svg>
+                Undo
+              </button>
+            </form>
 
-        <% } else if (s === 'accepted') { %>
-          <span class="decision-pill decision-pill--accepted">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Application Accepted
-          </span>
-          <form action="/student/applicants/<%= app.request_id %>/undo?_method=PATCH" method="POST" class="foot-form">
-            <input type="hidden" name="_method" value="PATCH" />
-            <button type="submit" class="btn-undo">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
-              Undo
-            </button>
-          </form>
+          <% } else if (rawStatus === 'rejected') { %>
+            <!-- REJECTED: show confirmed state + Undo -->
+            <div class="btn-status-confirmed btn-rejected-confirmed">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Application Rejected
+            </div>
+            <form action="/student/applicants/<%= applicant.request_id %>/undo?_method=PATCH" method="POST" class="action-form">
+              <input type="hidden" name="application_status" value="accepted">
+              <button type="submit" class="btn-undo">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.17"/></svg>
+                Undo
+              </button>
+            </form>
 
-        <% } else if (s === 'rejected') { %>
-          <span class="decision-pill decision-pill--rejected">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Application Rejected
-          </span>
-          <form action="/student/applicants/<%= app.request_id %>/undo?_method=PATCH" method="POST" class="foot-form">
-            <input type="hidden" name="_method" value="PATCH" />
-            <button type="submit" class="btn-undo">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
-              Undo
-            </button>
-          </form>
-        <% } %>
+          <% } %>
 
-      </div><!-- /card-foot -->
+        </div>
+        <!-- end card-actions -->
 
-    </article>
-    <% }); %>
+      </div>
+      <!-- end card-body -->
+    </div>
+    <!-- end applicant-card -->
+    <% }) %>
 
-  </div><!-- /cards-grid -->
+  </div>
+  <!-- end applicants-grid -->
 
-  <p class="no-results" id="noResults" hidden>No applicants match this filter.</p>
+  <!-- No results after filter -->
+  <div class="no-filter-results" id="noFilterResults" style="display:none;">
+    <div class="empty-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="empty-title">No matches found</div>
+    <p class="empty-sub">Try a different search term or filter.</p>
+  </div>
 
-  <% } else { %>
+<% } else { %>
 
-  <!-- Empty state -->
+  <!-- Empty State -->
   <div class="empty-state">
     <div class="empty-icon">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     </div>
-    <h2 class="empty-title">No applicants yet</h2>
-    <p  class="empty-sub">Nobody has applied to your projects yet. Make sure your projects are open and visible.</p>
-    <a href="/student/myprojects" class="btn-primary">View My Projects</a>
+    <div class="empty-title">No applicants yet</div>
+    <p class="empty-sub">Once students apply to your projects, their applications will appear here for you to review.</p>
   </div>
 
-  <% } %>
+<% } %>
 
-</main>
+</div>
+<!-- end container -->
 
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer class="footer">
   <div class="footer-inner">
     <span class="footer-logo">Team<span>Match</span></span>
@@ -289,75 +256,85 @@
   </div>
 </footer>
 
+<!-- ═══════════ JS: filter + search + show more ═══════════ -->
 <script>
 (function () {
-  'use strict';
+  /* ── Filter & Search ── */
+  const grid        = document.getElementById('applicantsGrid');
+  const noResults   = document.getElementById('noFilterResults');
+  const searchInput = document.getElementById('applicantSearch');
+  const ftabs       = document.querySelectorAll('.ftab');
 
-  /* ── Hamburger / mobile drawer ───────────────────── */
-  var burger = document.getElementById('navHamburger');
-  var drawer = document.getElementById('navDrawer');
-  if (burger && drawer) {
-    burger.addEventListener('click', function () {
-      var open = drawer.classList.toggle('drawer--open');
-      burger.setAttribute('aria-expanded', String(open));
-      burger.classList.toggle('is-open', open);
-      drawer.setAttribute('aria-hidden', String(!open));
+  let activeFilter = 'all';
+  let searchTerm   = '';
+
+  function applyFilters() {
+    const cards = grid ? grid.querySelectorAll('.applicant-card') : [];
+    let visible = 0;
+
+    cards.forEach(card => {
+      const status  = card.dataset.status  || '';
+      const name    = card.dataset.name    || '';
+      const project = card.dataset.project || '';
+
+      const matchFilter = activeFilter === 'all' || status === activeFilter;
+      const matchSearch = !searchTerm || name.includes(searchTerm) || project.includes(searchTerm);
+
+      if (matchFilter && matchSearch) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
     });
-    drawer.querySelectorAll('.drawer-link').forEach(function (l) {
-      l.addEventListener('click', function () {
-        drawer.classList.remove('drawer--open');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.classList.remove('is-open');
-        drawer.setAttribute('aria-hidden', 'true');
-      });
+
+    if (noResults) noResults.style.display = visible === 0 ? 'flex' : 'none';
+  }
+
+  ftabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      ftabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeFilter = tab.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      searchTerm = searchInput.value.trim().toLowerCase();
+      applyFilters();
     });
   }
 
-  /* ── Filter tabs (reads data-status from EJS; never mutates it) ── */
-  var fbtns = document.querySelectorAll('.fbtn');
-  var cards = document.querySelectorAll('.app-card');
-  var noRes = document.getElementById('noResults');
-  fbtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      fbtns.forEach(function (b) { b.classList.remove('fbtn--active'); });
-      btn.classList.add('fbtn--active');
-      var f = btn.getAttribute('data-filter');
-      var shown = 0;
-      cards.forEach(function (card) {
-        var match = (f === 'all') || (card.getAttribute('data-status') === f);
-        card.style.display = match ? '' : 'none';
-        if (match) shown++;
-      });
-      if (noRes) noRes.hidden = shown > 0;
-    });
-  });
+  /* ── Show More / Show Less ── */
+  // Line-height ~1.7 × font-size 0.83rem ≈ 14px per line; 3 lines ≈ 42px
+  const LINE_CLAMP_HEIGHT = 66; // px threshold — show toggle if text overflows 3 lines
 
-  /* ── Show More / Show Less ───────────────────────── */
-  document.querySelectorAll('.msg-toggle').forEach(function (btn) {
-    var wrap = btn.closest('.msg-wrap');
-    var body = wrap.querySelector('.msg-body');
+  document.querySelectorAll('[data-msg-text]').forEach(p => {
+    const toggle = p.parentElement.querySelector('[data-msg-toggle]');
+    if (!toggle) return;
 
-    function syncBtn() {
-      btn.style.display = body.scrollHeight > body.clientHeight + 2 ? '' : 'none';
-    }
-    syncBtn();
-    window.addEventListener('resize', syncBtn);
-
-    btn.addEventListener('click', function () {
-      var expanded = btn.getAttribute('aria-expanded') === 'true';
-      if (expanded) {
-        body.classList.add('msg-body--clamped');
-        btn.setAttribute('aria-expanded', 'false');
-        btn.innerHTML = 'Show more <svg class="msg-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
-      } else {
-        body.classList.remove('msg-body--clamped');
-        btn.setAttribute('aria-expanded', 'true');
-        btn.innerHTML = 'Show less <svg class="msg-chevron msg-chevron--up" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+    // Check after render if text overflows the 3-line clamp
+    requestAnimationFrame(() => {
+      if (p.scrollHeight > p.clientHeight + 2) {
+        toggle.style.display = 'inline-flex';
       }
-      syncBtn();
+    });
+
+    toggle.addEventListener('click', () => {
+      const isCollapsed = p.classList.contains('collapsed');
+      if (isCollapsed) {
+        p.classList.replace('collapsed', 'expanded');
+        toggle.classList.add('expanded');
+        toggle.childNodes[0].textContent = 'Show less';
+      } else {
+        p.classList.replace('expanded', 'collapsed');
+        toggle.classList.remove('expanded');
+        toggle.childNodes[0].textContent = 'Show more';
+      }
     });
   });
-
 })();
 </script>
 

@@ -97,53 +97,6 @@ studentRoutes.get('/projects' , isStudent , limiter ,async (req , res)=>{
 
 });
 
-studentRoutes.get('/myprojects', isStudent, limiter ,async (req, res) => {
-    try {
-        const createdBy = req.session.studentId;
-        const myproject = await myProjects(createdBy);
-
-        return res.render("st-my-projects", {
-            projects: myproject 
-        });
-
-    } catch (e) {
-        console.log(e.message);
-        return res.status(500).send("Server error");
-    }
-});
-
-studentRoutes.post('/project/:id/delete', isStudent, limiter ,async (req, res) => {
-    try {
-        const projectId = req.params.id;
-        const studentId = req.session.studentId;
-
-        const result = await deleteProjects(projectId, studentId);
-        return res.redirect("/student/myprojects");
-
-    } catch (e) {
-        console.log(e.message);
-        return res.status(500).render("500");
-    }
-});
-
-studentRoutes.delete('/my-projects/:id/delete' , isStudent, limiter , async (req ,res)=>{
-     try{
-        const studentId = req.session.studentId;
-        const projectId = req.params.id;
-        const deleteProject = await deleteProjects(projectId , studentId);
-        if(deleteProject){
-             return res.redirect('/student/myprojects');
-        }
-        else{
-            return res.status(500).render("500");
-        }
-       
-    }catch(e){
-        console.log(e.message);
-        return res.status(500).render("500");
-    }
-});
-
 studentRoutes.get('/project/application/:id/apply' , isStudent , limiter , async(req , res)=>{
     
     const projectId = req.params.id;
@@ -166,6 +119,53 @@ studentRoutes.post('/project/application/submit', isStudent , limiter , async(re
         return res.status(500).render("500")
     }
 
+});
+
+studentRoutes.post('/project/:id/delete', isStudent, limiter ,async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const studentId = req.session.studentId;
+
+        const result = await deleteProjects(projectId, studentId);
+        return res.redirect("/student/myprojects");
+
+    } catch (e) {
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
+});
+
+studentRoutes.get('/myprojects', isStudent, limiter ,async (req, res) => {
+    try {
+        const createdBy = req.session.studentId;
+        const myproject = await myProjects(createdBy);
+
+        return res.render("st-my-projects", {
+            projects: myproject 
+        });
+
+    } catch (e) {
+        console.log(e.message);
+        return res.status(500).send("Server error");
+    }
+});
+
+studentRoutes.delete('/my-projects/:id/delete' , isStudent, limiter , async (req ,res)=>{
+     try{
+        const studentId = req.session.studentId;
+        const projectId = req.params.id;
+        const deleteProject = await deleteProjects(projectId , studentId);
+        if(deleteProject){
+             return res.redirect('/student/myprojects');
+        }
+        else{
+            return res.status(500).render("500");
+        }
+       
+    }catch(e){
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
 });
 
 studentRoutes.get('/applications' , isStudent , limiter ,async(req , res)=>{
@@ -206,6 +206,7 @@ studentRoutes.get('/applicants' ,isStudent ,limiter ,async (req , res)=>{
     try{
         const studentId = req.session.studentId;
         const applicants = await getApplicants(studentId);
+
         return res.render("applicants" , {
             applicants : applicants,
         });
@@ -232,10 +233,14 @@ studentRoutes.patch('/applicants/:id/accept', isStudent , limiter ,async(req , r
 studentRoutes.patch('/applicants/:id/undo', isStudent , limiter ,async(req , res)=>{
     try{
         const requestId = Number(req.params.id);
-        const status = req.body.undo_appliaction
+        const status = req.body.application_status
         const result = await updateApplicationStatus(status ,requestId);
-
-        return res.redirect("/student/applicants");
+        if(result){
+            return res.redirect("/student/applicants");
+        }else{
+            return res.status(500).render("500");
+        }
+        
     }catch(e){
         console.log(e.message);
         return res.status(500).render("500");
