@@ -159,7 +159,7 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
 
     <div class="stats-grid">
 
-      <div class="stat-card sc-green">
+      <div class="stat-card sc-green" onclick="accepted()">
         <div class="stat-top">
           <div class="stat-icon-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -171,7 +171,7 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
         <div class="stat-hint">Students currently advising</div>
       </div>
 
-      <div class="stat-card sc-amber">
+      <div class="stat-card sc-amber" onclick="pending()">
         <div class="stat-top">
           <div class="stat-icon-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -183,7 +183,7 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
         <div class="stat-hint">Awaiting your response</div>
       </div>
 
-      <div class="stat-card sc-coral">
+      <div class="stat-card sc-coral" onclick="rejected()">
         <div class="stat-top">
           <div class="stat-icon-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -292,6 +292,18 @@ const isAvailable = !!(advisor.is_available || advisor.is_available);
       }, 320 + i * 60);
     });
   });
+
+  function accepted(){
+    window.location.href = "/advisor/projects";
+  }
+
+  function pending(){
+    window.location.href = "/advisor/requests";
+  }
+
+  function rejected(){
+    window.location.href = "/advisor/requests/rejected";
+  }
 </script>
 
 </body>

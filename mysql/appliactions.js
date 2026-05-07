@@ -1,9 +1,8 @@
 const database = require('./db');
 
-async function applyForProject(userId , projectId , email , message , skills){
+async function submitApplication(userId , projectId , email , message , skills){
 
     try{
-
         const sql = "INSERT INTO applications(user_id , project_id , email , request_message , request_skills) VALUES(?,?,?,?,?)";
         const [result] = await database.pool.execute(sql , [userId , projectId , email , message , skills]);
     }
@@ -17,7 +16,7 @@ async function applyForProject(userId , projectId , email , message , skills){
 async function myProjectApplications(userId){
 
     try{
-        const sql = "SELECT a.request_id , p.project_title , c.category_name , c.category_name , a.request_date, a.request_message , a.status  FROM applications AS a INNER JOIN student_projects AS p INNER JOIN categories AS c ON a.project_id = p.project_id AND p.project_type = category_id  WHERE a.user_id = ?;";
+        const sql = "SELECT a.request_id , p.project_title , a.email , u.full_name , u.department , c.category_name ,a.request_date, a.request_message , a.request_skills , a.status  FROM applications AS a INNER JOIN student_projects AS p INNER JOIN categories AS c INNER JOIN users AS u ON a.project_id = p.project_id AND u.user_id = a.user_id AND p.project_type = category_id  WHERE a.user_id = ?";
         const [rows] = await database.pool.execute(sql , [userId]);
         return rows;
     }
@@ -32,6 +31,11 @@ async function deleteApplication(applicationId){
     try{
         const sql = "DELETE FROM applications WHERE request_id = ?";
         const [result] = await database.pool.execute(sql , [applicationId]);
+        if(result.affectedRows < 0){
+            return null;
+        }
+
+        return true;
     }
 
     catch(e){
@@ -92,7 +96,7 @@ async function rejectApplication(requestId){
 
 
 module.exports = {
-    applyForProject,
+    submitApplication,
     myProjectApplications,
     deleteApplication,
     getApplicants,

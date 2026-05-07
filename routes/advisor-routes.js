@@ -64,18 +64,19 @@ advisorRouters.get('/requests' , isAdvisor , async(req , res)=>{
 
 });
 
-// advisorRouters.get('/requests/rejected' , isAdvisor , async(req , res)=>{
-//     try{
-//         const advisorId = req.session.advisorId;
-//         const accepted = await getRejectedRequests(advisorId);
+advisorRouters.get('/requests/rejected' , isAdvisor , async(req , res)=>{
+    try{
+        const advisorId = req.session.advisorId;
+        const rejected = await getRejectedRequests(advisorId);
 
-//         return res.render("advisor-rejected-requests");
-
-//     }catch(e){
-//         console.log(e.message);
-//         return res.status(500).render("500");
-//     }
-// }) // no front-end no planning (either in dashboard , or in projects section)
+        return res.render("new-advisor-rejected-reqs" , {
+            requests : rejected
+        });
+    }catch(e){
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
+}) // new front-end required .
 
 advisorRouters.patch('/requests/:requestId/accept' , isAdvisor , async(req , res)=>{
     

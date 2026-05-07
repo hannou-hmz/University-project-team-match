@@ -32,7 +32,11 @@ async function deleteProjects(projectId){
     try{
         const sql = "DELETE FROM student_projects WHERE project_id = ? ";
         const [result] = await database.pool.execute(sql , [projectId]);
+        if(result.affectedRows < 0){
+            return null;
+        }
         console.log("successefully deleted ..");
+        return true;
     }catch(e){
         console.error("Delete projects error:", e.message);
         throw e; 

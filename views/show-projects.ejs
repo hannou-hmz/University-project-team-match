@@ -8,169 +8,215 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/student-styling/project.css">
+<link rel="stylesheet" href="/student-styling/show-projects.css">
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar">
-    <a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
-    <div class="nav-links">
-        <a href="/student/projects" class="nav-link">Browse Projects</a>
-        <a href="/student/myprojects" class="nav-link">My Projects</a>
-        <a href="/student/applications" class="nav-link">My Applications</a>
-        <a href="/student/announcements" class="nav-link">Announcements</a>
-        <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
-        <a href="/student/requests" class="nav-link">Advisor Requests</a>
-        <a href="/student/applicants" class="nav-link">Applicants</a>
-    </div>
-    <div class="nav-actions">
-        <a href="/student/profile" class="nav-btn-outline">Profile</a>
-        <a href="/logout" class="nav-btn-logout">Logout</a>
-    </div>
+<a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
+<div class="nav-links">
+    <a href="/student/projects" class="nav-link">Browse Projects</a>
+    <a href="/student/myprojects" class="nav-link">My Projects</a>
+    <a href="/student/applications" class="nav-link">My Applications</a>
+    <a href="/student/announcements" class="nav-link">Announcements</a>
+    <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
+    <a href="/student/requests" class="nav-link">Advisor Requests</a>
+    <a href="/student/applicants" class="nav-link">Applicants</a>
+</div>
+<div class="nav-actions">
+    <a href="/student/profile" class="nav-btn-outline">Profile</a>
+    <a href="/logout" class="nav-btn-logout">Logout</a>
+</div>
 </nav>
 
 <!-- Page Header -->
 <div class="page-header">
-    <div class="page-header-inner">
-        <div class="page-eyebrow">Student Portal</div>
-        <h1 class="page-title">Browse Projects</h1>
-        <p class="page-sub">Explore open projects across all departments and find your next collaboration.</p>
-    </div>
+<div class="page-header-inner">
+    <div class="page-eyebrow">Student Portal</div>
+    <h1 class="page-title">Browse Projects</h1>
+    <p class="page-sub">Explore open projects across all departments and find your next collaboration.</p>
+</div>
 </div>
 
 <div class="container">
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-        <div class="toolbar-left">
-            <span class="results-count">
-                <strong><%= projects.length %></strong> project<%= projects.length !== 1 ? 's' : '' %> available
-            </span>
+<!-- Toolbar -->
+<div class="toolbar">
+    <div class="toolbar-left">
+        <span class="results-count">
+            <strong><%= projects.length %></strong> project<%= projects.length !== 1 ? 's' : '' %> available
+        </span>
+    </div>
+    <div class="toolbar-right">
+        <div class="search-wrap">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search projects or skills...">
         </div>
-        <div class="toolbar-right">
-            <div class="search-wrap">
-                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search projects or skills...">
+        <select class="filter-select" id="categoryFilter">
+            <option value="">-- Select a category --</option>
+            <% categories.forEach(category => { %>
+            <option value="<%= category.category_id %>">
+                <%= category.category_name %>
+            </option>
+            <% }) %>
+        </select>
+    </div>
+</div>
+
+<!-- Projects Grid -->
+<div class="projects-grid" id="projectsGrid">
+
+    <% projects.forEach(project => { %>
+    <div class="project-card" data-title="<%= project.project_title %>" data-skills="<%= project.required_skills %>" data-category="<%= project.category_name %>">
+
+        <div class="pc-top">
+            <div class="pc-header">
+                <h3 class="pc-title"><%= project.project_title %></h3>
+                <span class="pc-category"><%= project.category_name %></span>
             </div>
-            <select class="filter-select" id="categoryFilter">
-                <option value="">-- Select a category --</option>
-                <% categories.forEach(category => { %>
-                <option value="<%= category.category_id %>">
-                    <%= category.category_name %>
-                </option>
+
+            <div class="pc-meta-row">
+                <span class="pc-meta-item">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <%= project.full_name %>
+                </span>
+                <span class="pc-meta-dot">·</span>
+                <span class="pc-meta-item">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <%= new Date(project.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </span>
+            </div>
+
+            <!-- Description with expand/collapse -->
+            <div class="pc-desc-wrap">
+                <p class="pc-desc pc-desc-collapsible"><%= project.project_description %></p>
+                <button class="pc-desc-toggle" type="button" aria-expanded="false">
+                    Show more
+                    <svg class="toggle-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="pc-bottom">
+            <% if (project.required_skills) { %>
+            <div class="pc-tags">
+                <% project.required_skills.split(',').slice(0, 4).forEach(skill => { %>
+                    <span class="pc-tag"><%= skill.trim() %></span>
                 <% }) %>
-            </select>
-        </div>
-    </div>
-
-    <!-- Projects Grid -->
-    <div class="projects-grid" id="projectsGrid">
-
-        <% projects.forEach(project => { %>
-        <div class="project-card" data-title="<%= project.project_title %>" data-skills="<%= project.required_skills %>" data-category="<%= project.category_name %>">
-
-            <div class="pc-top">
-                <div class="pc-header">
-                    <h3 class="pc-title"><%= project.project_title %></h3>
-                    <span class="pc-category"><%= project.category_name %></span>
-                </div>
-
-                <div class="pc-meta-row">
-                    <span class="pc-meta-item">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <%= project.full_name %>
-                    </span>
-                    <span class="pc-meta-dot">·</span>
-                    <span class="pc-meta-item">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        <%= new Date(project.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
-                    </span>
-                </div>
-
-                <p class="pc-desc"><%= project.project_description %></p>
-            </div>
-
-            <div class="pc-bottom">
-                <% if (project.required_skills) { %>
-                <div class="pc-tags">
-                    <% project.required_skills.split(',').slice(0, 4).forEach(skill => { %>
-                        <span class="pc-tag"><%= skill.trim() %></span>
-                    <% }) %>
-                    <% if (project.required_skills.split(',').length > 4) { %>
-                        <span class="pc-tag pc-tag-more">+<%= project.required_skills.split(',').length - 4 %></span>
-                    <% } %>
-                </div>
+                <% if (project.required_skills.split(',').length > 4) { %>
+                    <span class="pc-tag pc-tag-more">+<%= project.required_skills.split(',').length - 4 %></span>
                 <% } %>
-
-                <div class="pc-footer">
-                    <div class="pc-budget">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        Budget: <strong><%= project.budget ? Number(project.budget).toLocaleString() + ' ₺' : 'N/A' %></strong>
-                    </div>
-                    <a class="apply-btn" href="/student/project/application/<%= project.project_id %>/apply">
-                        Apply
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </a>
-                    <input type="hidden" name="projectId">
-                </div>
             </div>
+            <% } %>
 
+            <div class="pc-footer">
+                <div class="pc-budget">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Budget: <strong><%= project.budget ? Number(project.budget).toLocaleString() + ' ₺' : 'N/A' %></strong>
+                </div>
+                <a class="apply-btn" href="/student/project/application/<%= project.project_id %>/apply">
+                    Apply
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+                <input type="hidden" name="projectId">
+            </div>
         </div>
-        <% }) %>
 
     </div>
+    <% }) %>
 
-    <!-- Empty state -->
-    <div class="empty-state" id="emptyState" style="display:none;">
-        <div class="empty-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <div class="empty-title">No projects found</div>
-        <div class="empty-sub">Try adjusting your search or filter.</div>
+</div>
+
+<!-- Empty state -->
+<div class="empty-state" id="emptyState" style="display:none;">
+    <div class="empty-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </div>
+    <div class="empty-title">No projects found</div>
+    <div class="empty-sub">Try adjusting your search or filter.</div>
+</div>
 
 </div>
 
 <footer class="footer">
-    <div class="footer-inner">
-        <span class="footer-logo">Team<span>Match</span></span>
-        <span class="footer-copy">University Project Collaboration Platform</span>
-    </div>
+<div class="footer-inner">
+    <span class="footer-logo">Team<span>Match</span></span>
+    <span class="footer-copy">University Project Collaboration Platform</span>
+</div>
 </footer>
 
 <script>
-    const searchInput = document.getElementById('searchInput');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const cards = document.querySelectorAll('.project-card');
-    const emptyState = document.getElementById('emptyState');
+/* ── Filter logic (unchanged) ── */
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const cards = document.querySelectorAll('.project-card');
+const emptyState = document.getElementById('emptyState');
 
-    function filterProjects() {
-        const query = searchInput.value.toLowerCase();
-        const category = categoryFilter.value.toLowerCase();
-        let visible = 0;
+function filterProjects() {
+    const query = searchInput.value.toLowerCase();
+    const category = categoryFilter.value.toLowerCase();
+    let visible = 0;
 
-        cards.forEach(card => {
-            const title = (card.dataset.title || '').toLowerCase();
-            const skills = (card.dataset.skills || '').toLowerCase();
-            const cat = (card.dataset.category || '').toLowerCase();
+    cards.forEach(card => {
+        const title = (card.dataset.title || '').toLowerCase();
+        const skills = (card.dataset.skills || '').toLowerCase();
+        const cat = (card.dataset.category || '').toLowerCase();
 
-            const matchesSearch = !query || title.includes(query) || skills.includes(query);
-            const matchesCategory = !category || cat.includes(category);
+        const matchesSearch = !query || title.includes(query) || skills.includes(query);
+        const matchesCategory = !category || cat.includes(category);
 
-            if (matchesSearch && matchesCategory) {
-                card.style.display = '';
-                visible++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        if (matchesSearch && matchesCategory) {
+            card.style.display = '';
+            visible++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
 
-        emptyState.style.display = visible === 0 ? 'flex' : 'none';
+    emptyState.style.display = visible === 0 ? 'flex' : 'none';
+}
+
+searchInput.addEventListener('input', filterProjects);
+categoryFilter.addEventListener('change', filterProjects);
+
+/* ── Description expand / collapse ── */
+const LINE_HEIGHT  = 20;   /* px — matches font-size 13px * 1.6 line-height */
+const CLAMP_LINES  = 3;
+const CLAMP_HEIGHT = LINE_HEIGHT * CLAMP_LINES;
+
+document.querySelectorAll('.pc-desc-wrap').forEach(wrap => {
+    const desc   = wrap.querySelector('.pc-desc-collapsible');
+    const toggle = wrap.querySelector('.pc-desc-toggle');
+
+    /* Measure real height after render */
+    const fullHeight = desc.scrollHeight;
+
+    /* Only wire up toggle if content actually overflows */
+    if (fullHeight <= CLAMP_HEIGHT + 4) {
+        toggle.style.display = 'none';
+        return;
     }
 
-    searchInput.addEventListener('input', filterProjects);
-    categoryFilter.addEventListener('change', filterProjects);
+    /* Start clamped */
+    desc.style.maxHeight = CLAMP_HEIGHT + 'px';
+
+    toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+
+        if (expanded) {
+            /* Collapse */
+            desc.style.maxHeight = CLAMP_HEIGHT + 'px';
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.innerHTML = `Show more <svg class="toggle-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+        } else {
+            /* Expand */
+            desc.style.maxHeight = fullHeight + 'px';
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.innerHTML = `Show less <svg class="toggle-chevron chevron-up" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`;
+        }
+    });
+});
 </script>
 
 </body>

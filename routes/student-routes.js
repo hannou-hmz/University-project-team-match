@@ -9,7 +9,7 @@ const {getAdvisors , requestAdvisor} = require('../mysql/advisors');
 const {getAnnouncements} = require('../mysql/announcements');
 const {compareUserPassword} = require('../mysql/users');
 const {createProjects , getProjects , deleteProjects, myProjects , applyForProjects} = require('../mysql/projects');
-const {applyForProject, myProjectApplications, deleteApplication, getApplicants ,
+const {submitApplication, myProjectApplications, deleteApplication, getApplicants ,
      acceptApplication , rejectApplication,
      updateApplicationStatus} = require('../mysql/appliactions');
 
@@ -131,7 +131,13 @@ studentRoutes.delete('/my-projects/:id/delete' , isStudent, limiter , async (req
         const studentId = req.session.studentId;
         const projectId = req.params.id;
         const deleteProject = await deleteProjects(projectId , studentId);
-        return res.redirect('/student/myprojects');
+        if(deleteProject){
+             return res.redirect('/student/myprojects');
+        }
+        else{
+            return res.status(500).render("500");
+        }
+       
     }catch(e){
         console.log(e.message);
         return res.status(500).render("500");
@@ -152,7 +158,7 @@ studentRoutes.post('/project/application/submit', isStudent , limiter , async(re
         const id = req.session.studentId;
         const {projectId , email , message , skills}  = req.body;
 
-        const application = await applyForProject(id , projectId , email , message , skills);
+        const application = await submitApplication(id , projectId , email , message , skills);
         return res.redirect('/student/projects');
     }
     catch(e){
@@ -179,15 +185,16 @@ studentRoutes.get('/applications' , isStudent , limiter ,async(req , res)=>{
     
 });
 
-
 studentRoutes.delete('/applications/:applicationID/delete' ,isStudent, limiter ,async(req , res)=>{
     try{
         const applicationId = req.params.applicationID;
         const removeApplication = await deleteApplication(applicationId);
 
-        return res.render("st-applications" , {
-            applications : removeApplication
-        });
+        if(removeApplication){
+            return res.redirect('/student/applications');
+        }
+
+        return res.status(500).render("500");
     }
     catch(e){
         console.log(e.message);
@@ -214,6 +221,7 @@ studentRoutes.patch('/applicants/:id/accept', isStudent , limiter ,async(req , r
     try{
         const requestId = Number(req.params.id);
         const accept = await acceptApplication(requestId);
+
         return res.redirect("/student/applicants");
     }catch(e){
         console.log(e.message);
@@ -226,7 +234,7 @@ studentRoutes.patch('/applicants/:id/undo', isStudent , limiter ,async(req , res
         const requestId = Number(req.params.id);
         const status = req.body.undo_appliaction
         const result = await updateApplicationStatus(status ,requestId);
-        console.log(result);
+
         return res.redirect("/student/applicants");
     }catch(e){
         console.log(e.message);
