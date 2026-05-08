@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rejected Requests — Advisor · TeamMatch</title>
+<link rel="stylesheet" href="/advisor-styling/rejected-reqs.css">
+<link rel="icon" href="/img/fav.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<%
+const isAvailable = !!(advisor && (advisor.is_available || advisor.available));
+%>
+
+<!-- Mobile overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor"/><path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </div>
+    <div class="sb-brand-text">
+      <a href="/advisor/dashboard" class="sb-name">Team<em>Match</em></a>
+      <span class="sb-role">Advisor Portal</span>
+    </div>
+  </div>
+
+  <% if (typeof advisor !== 'undefined' && advisor) { %>
+  <div class="sb-profile" onclick="window.location.href='/advisor/profile'" title="View profile">
+    <div class="sp-avatar">
+      <%= advisor.full_name ? advisor.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'AD' %>
+    </div>
+    <div class="sp-info">
+      <div class="sp-name"><%= advisor.full_name || 'Advisor' %></div>
+      <% if (advisor.academic_title) { %>
+      <div class="sp-title"><%= advisor.academic_title %></div>
+      <% } %>
+    </div>
+    <div class="sp-avail-dot <%= isAvailable ? 'dot-on' : 'dot-off' %>"></div>
+  </div>
+
+  <div class="sb-avail-strip <%= isAvailable ? 'avail-on' : 'avail-off' %>">
+    <span class="sa-label"><%= isAvailable ? 'Available for advising' : 'Not accepting requests' %></span>
+    <a href="/advisor/profile" class="sa-link">Change →</a>
+  </div>
+  <% } %>
+
+  <div class="sb-divider"></div>
+
+  <nav class="sb-nav">
+    <div class="sb-nav-label">Navigation</div>
+
+    <a href="/advisor/dashboard" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      </span>
+      <span class="sb-link-label">Dashboard</span>
+    </a>
+
+    <a href="/advisor/projects" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+      </span>
+      <span class="sb-link-label">My Projects</span>
+    </a>
+
+    <a href="/advisor/requests" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <span class="sb-link-label">Student Requests</span>
+    </a>
+
+    <a href="/advisor/requests/rejected" class="sb-link active">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </span>
+      <span class="sb-link-label">Rejected Requests</span>
+    </a>
+
+    <a href="/advisor/profile" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      <span class="sb-link-label">My Profile</span>
+    </a>
+  </nav>
+
+  <div class="sb-footer">
+    <a href="/logout" class="sb-logout-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </div>
+
+</aside>
+
+<!-- ═══════════════════════════════════════
+     LAYOUT MAIN
+════════════════════════════════════════ -->
+<div class="layout-main">
+
+  <!-- ── Topbar ── -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">
+        <span class="tb-root">TeamMatch</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="tb-mid">
+          <a href="/advisor/requests" class="tb-link">Student Requests</a>
+        </span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="tb-current">Rejected</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <% if (requests && requests.length > 0) { %>
+      <div class="topbar-count tc-coral">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <strong><%= requests.length %></strong>&nbsp;rejected
+      </div>
+      <% } %>
+      <a href="/advisor/requests" class="topbar-back-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        All Requests
+      </a>
+    </div>
+  </header>
+
+  <!-- ── Page content ── -->
+  <main class="page-content">
+
+    <!-- Page heading -->
+    <div class="page-heading">
+      <div>
+        <h1 class="page-title">Rejected Requests</h1>
+        <p class="page-subtitle">All advising requests you have declined — review or reconsider.</p>
+      </div>
+    </div>
+
+    <% if (requests && requests.length > 0) { %>
+
+    <!-- Table panel -->
+    <div class="panel">
+
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <div class="panel-title">Declined Requests</div>
+          <div class="panel-sub">
+            <%= requests.length %> request<%= requests.length !== 1 ? 's' : '' %> rejected
+          </div>
+        </div>
+        <div class="search-wrap">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search by name, email, or project…">
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Student</th>
+                <th>Department</th>
+                <th>Project</th>
+                <th>Category</th>
+                <th>Meeting</th>
+                <th>Date</th>
+                <th class="th-right">Details</th>
+              </tr>
+            </thead>
+            <tbody id="requestsTableBody">
+              <% requests.forEach(request => { %>
+              <tr class="req-row"
+                  data-name="<%= request.full_name %>"
+                  data-email="<%= request.email %>"
+                  data-project="<%= request.project_title %>">
+
+                <!-- Request ID -->
+                <td class="td-id">#<%= request.request_id %></td>
+
+                <!-- Student -->
+                <td>
+                  <div class="student-cell">
+                    <div class="student-avatar">
+                      <%= request.full_name ? request.full_name.charAt(0).toUpperCase() : 'S' %>
+                    </div>
+                    <div class="student-info">
+                      <div class="student-name"><%= request.full_name %></div>
+                      <div class="student-email">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <%= request.email %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Department -->
+                <td>
+                  <span class="dept-tag"><%= request.department_name %></span>
+                </td>
+
+                <!-- Project title — click to open drawer -->
+                <td>
+                  <button class="project-title-btn"
+                          onclick="openDrawer(this)"
+                          data-title="<%= request.project_title %>"
+                          data-desc="<%= request.project_description ? request.project_description.replace(/\"/g, '&quot;') : 'No description provided.' %>"
+                          data-message="<%= request.request_message ? request.request_message.replace(/\"/g, '&quot;') : '' %>"
+                          data-uid="<%= request.user_id %>">
+                    <span class="pt-text"><%= request.project_title %></span>
+                    <span class="pt-hint">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      View details
+                    </span>
+                  </button>
+                </td>
+
+                <!-- Category -->
+                <td><span class="cat-badge"><%= request.category_name %></span></td>
+
+                <!-- Meeting method -->
+                <td>
+                  <span class="meeting-badge">
+                    <% if (request.meeting_method === 'online') { %>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                      Online
+                    <% } else { %>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                      In Person
+                    <% } %>
+                  </span>
+                </td>
+
+                <!-- Date -->
+                <td class="td-date">
+                  <%= new Date(request.requested_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </td>
+
+                <!-- Details button -->
+                <td class="td-action-cell">
+                  <button class="btn-detail"
+                          onclick="openDrawer(this.closest('tr').querySelector('.project-title-btn'))">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Details
+                  </button>
+                </td>
+
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty search state -->
+        <div class="empty-search" id="emptySearch" style="display:none;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          No requests match your search.
+        </div>
+
+      </div>
+    </div>
+
+    <% } else { %>
+
+    <!-- Empty state -->
+    <div class="panel">
+      <div class="empty-state">
+        <div class="empty-icon-wrap">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="empty-title">No rejected requests</div>
+        <p class="empty-sub">You haven't declined any advising requests yet.</p>
+        <a href="/advisor/requests" class="btn-primary">View All Requests</a>
+      </div>
+    </div>
+
+    <% } %>
+
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     DETAILS DRAWER
+════════════════════════════════════════ -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
+<div class="detail-drawer" id="detailDrawer">
+
+  <div class="drawer-header">
+    <div class="drawer-header-left">
+      <div class="drawer-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <div>
+        <div class="drawer-label">Rejected Request</div>
+        <div class="drawer-project-title" id="drawerTitle"></div>
+      </div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+
+    <!-- Status badge -->
+    <div class="drawer-status">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Rejected
+    </div>
+
+    <!-- Project description -->
+    <div class="drawer-section">
+      <div class="drawer-section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/></svg>
+        Project Description
+      </div>
+      <p class="drawer-text" id="drawerDesc"></p>
+    </div>
+
+    <!-- Student message -->
+    <div class="drawer-section" id="drawerMsgSection">
+      <div class="drawer-section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Student's Message
+      </div>
+      <p class="drawer-text drawer-text-italic" id="drawerMsg"></p>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+  // ── Drawer ──
+  function openDrawer(btn) {
+    document.getElementById('drawerTitle').textContent = btn.dataset.title;
+    document.getElementById('drawerDesc').textContent  = btn.dataset.desc;
+
+    const msg     = btn.dataset.message || '';
+    const msgSec  = document.getElementById('drawerMsgSection');
+    const msgEl   = document.getElementById('drawerMsg');
+    if (msg.trim()) {
+      msgEl.textContent = msg;
+      msgSec.style.display = '';
+    } else {
+      msgSec.style.display = 'none';
+    }
+
+    document.getElementById('drawerBackdrop').classList.add('visible');
+    document.getElementById('detailDrawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    document.getElementById('drawerBackdrop').classList.remove('visible');
+    document.getElementById('detailDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Search ──
+  const searchInput = document.getElementById('searchInput');
+  const rows        = document.querySelectorAll('.req-row');
+  const emptySearch = document.getElementById('emptySearch');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.toLowerCase();
+      let visible = 0;
+      rows.forEach(row => {
+        const name    = (row.dataset.name    || '').toLowerCase();
+        const email   = (row.dataset.email   || '').toLowerCase();
+        const project = (row.dataset.project || '').toLowerCase();
+        const match   = !q || name.includes(q) || email.includes(q) || project.includes(q);
+        row.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      if (emptySearch) emptySearch.style.display = visible === 0 ? 'flex' : 'none';
+    });
+  }
+
+  // ── Mobile sidebar ──
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('visible');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('visible');
+  }
+
+  // ── Escape ──
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  // ── Stagger rows ──
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.req-row').forEach((row, i) => {
+      row.style.opacity = '0';
+      row.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        row.style.transition = 'opacity .35s ease, transform .35s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateY(0)';
+      }, 60 + i * 45);
+    });
+  });
+</script>
+
+</body>
+</html>

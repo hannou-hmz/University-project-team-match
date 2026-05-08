@@ -42,6 +42,19 @@ advisorRouters.get('/dashboard' , isAdvisor, async(req , res)=>{
     }
 });
 
+advisorRouters.get('/announcements' , isAdvisor , async(req , res)=>{
+    try{
+        const announcements = await getAnnouncements();
+        return res.render("" , {
+            
+        });
+    }
+    catch(e){
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
+});
+
 advisorRouters.get('/requests' , isAdvisor , async(req , res)=>{
 
     try{
@@ -58,6 +71,24 @@ advisorRouters.get('/requests' , isAdvisor , async(req , res)=>{
     }
 
 });
+
+advisorRouters.get('/requests/rejected' , isAdvisor , async(req , res)=>{
+    try{    
+        const advisorId = req.session.advisorId;
+        const advisorInfos = await getAdvisorProfileInfo(advisorId);
+        const rejected = await getRejectedRequests(advisorId);
+
+        return res.render("advisor-rejected-reqs" , {
+            requests : rejected,
+            advisor : advisorInfos
+        }
+        );
+
+    }catch(e){
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
+}) 
 
 advisorRouters.patch('/requests/:requestId/accept' , isAdvisor , async(req , res)=>{
     
