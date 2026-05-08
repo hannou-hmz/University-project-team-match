@@ -13,7 +13,7 @@
 <body>
 
 <%
-const isAvailable = !!(advisor.available || advisor.available);
+const isAvailable = !!(advisor.is_available || advisor.available);
 %>
 
 <!-- Mobile overlay -->
@@ -46,13 +46,13 @@ const isAvailable = !!(advisor.available || advisor.available);
       <div class="sp-title"><%= advisor.academic_title %></div>
       <% } %>
     </div>
-    <div class="sp-avail-dot <%= advisor.available  ? 'dot-on' : 'dot-off' %>"
-         title="<%= advisor.available  ? 'Available' : 'Unavailable' %>"></div>
+    <div class="sp-avail-dot <%= isAvailable ? 'dot-on' : 'dot-off' %>"
+         title="<%= isAvailable ? 'Available' : 'Unavailable' %>"></div>
   </div>
 
   <!-- Availability strip -->
-  <div class="sb-avail-strip <%= advisor.available  ? 'avail-on' : 'avail-off' %>">
-    <span class="sa-label"><%= advisor.available  ? 'Available for advising' : 'Not accepting requests' %></span>
+  <div class="sb-avail-strip <%= isAvailable ? 'avail-on' : 'avail-off' %>">
+    <span class="sa-label"><%= isAvailable ? 'Available for advising' : 'Not accepting requests' %></span>
     <a href="/advisor/profile" class="sa-link">Change →</a>
   </div>
 
@@ -80,9 +80,19 @@ const isAvailable = !!(advisor.available || advisor.available);
       <span class="sb-link-icon">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </span>
-      <span class="sb-link-label">New Requests</span>
+      <span class="sb-link-label">Student Requests</span>
       <% if (pending > 0) { %>
       <span class="sb-badge"><%= pending %></span>
+      <% } %>
+    </a>
+
+    <a href="/advisor/requests/rejected" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </span>
+      <span class="sb-link-label">Rejected Requests</span>
+      <% if (rejected > 0) { %>
+      <span class="sb-badge-coral"><%= rejected %></span>
       <% } %>
     </a>
 
@@ -92,6 +102,7 @@ const isAvailable = !!(advisor.available || advisor.available);
       </span>
       <span class="sb-link-label">My Profile</span>
     </a>
+
   </nav>
 
   <!-- Footer -->
@@ -124,9 +135,9 @@ const isAvailable = !!(advisor.available || advisor.available);
     <div class="topbar-right">
       <div class="topbar-date" id="topbarDate"></div>
       <div class="tb-sep"></div>
-      <div class="topbar-avail-pill <%= advisor.available ? 'pill-on' : 'pill-off' %>">
+      <div class="topbar-avail-pill <%= isAvailable ? 'pill-on' : 'pill-off' %>">
         <span class="pill-dot"></span>
-        <%= advisor.available? 'Available' : 'Unavailable' %>
+        <%= isAvailable ? 'Available' : 'Unavailable' %>
       </div>
     </div>
   </header>
@@ -221,7 +232,7 @@ const isAvailable = !!(advisor.available || advisor.available);
         </div>
         <div class="qc-body">
           <div class="qc-title">
-            New Requests
+            Student Requests
             <% if (pending > 0) { %>
             <span class="qc-badge"><%= pending %> pending</span>
             <% } %>
@@ -292,7 +303,6 @@ const isAvailable = !!(advisor.available || advisor.available);
       }, 320 + i * 60);
     });
   });
-
 </script>
 
 </body>

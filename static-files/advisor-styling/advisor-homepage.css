@@ -205,6 +205,15 @@ a { text-decoration: none; color: inherit; }
   flex-shrink: 0;
 }
 
+/* Rejected count badge — coral variant */
+.sb-badge-coral {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 18px; padding: 0 5px;
+  border-radius: 50px; background: var(--coral);
+  color: #fff; font-size: 0.65rem; font-weight: 800;
+  flex-shrink: 0;
+}
+
 .sb-link:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.82); }
 .sb-link:hover .sb-link-icon { opacity: 1; }
 .sb-link.active { background: rgba(37,99,255,0.18); color: var(--white); font-weight: 600; }
