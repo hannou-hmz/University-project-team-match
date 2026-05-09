@@ -174,6 +174,15 @@ a { text-decoration: none; color: inherit; }
   width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
 }
 
+/* Rejected count badge — coral */
+.sb-badge-coral {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 18px; padding: 0 5px;
+  border-radius: 50px; background: var(--coral);
+  color: #fff; font-size: 0.65rem; font-weight: 800;
+  flex-shrink: 0;
+}
+
 .sb-footer { padding: 14px 12px; border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
 
 .sb-logout-btn {

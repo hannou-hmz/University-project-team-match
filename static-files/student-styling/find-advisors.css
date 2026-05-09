@@ -269,17 +269,25 @@ body {
     flex-shrink: 0;
 }
 
-/* Top section */
+/* ── TOP SECTION ────────────────────────── */
+/*
+  Layout:
+  [ avatar ]  [ identity (name / title / dept) ]
+              [ avail-badge stays inside identity row, right-aligned ]
+  We use a two-column flex: avatar | identity-block.
+  The badge lives inside the identity-block at the top-right corner.
+*/
 .ac-top {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     padding: 20px 20px 16px;
-    position: relative;
 }
 
-/* Avatar */
-.ac-avatar-wrap { position: relative; flex-shrink: 0; }
+/* Avatar — no relative positioning tricks needed anymore */
+.ac-avatar-wrap {
+    flex-shrink: 0;
+}
 .ac-avatar {
     width: 54px;
     height: 54px;
@@ -300,37 +308,41 @@ body {
     object-fit: cover;
 }
 
-/* Availability dot */
-.avail-dot {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 2px solid var(--white);
+/* Identity block takes remaining space; badge is positioned at top-right */
+.ac-identity {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative; /* badge anchors here */
 }
-.avail-dot.available   { background: var(--green); }
-.avail-dot.unavailable { background: #cbd5e1; }
 
-/* Identity */
-.ac-identity { flex: 1; min-width: 0; }
+/* Row 1: name + badge side by side */
+.ac-name-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
 .ac-name {
     font-family: 'Syne', sans-serif;
-    font-size: 1rem;
+    font-size: 0.97rem;
     font-weight: 700;
     color: var(--navy);
     letter-spacing: -0.2px;
     line-height: 1.25;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* allow wrapping so badge doesn't crush it */
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
 }
 .ac-title-text {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--accent);
     font-weight: 600;
-    margin-top: 2px;
+    margin-top: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -339,31 +351,60 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     color: var(--muted);
     margin-top: 4px;
 }
 
-/* Availability badge */
+/* ── AVAILABILITY BADGE ─────────────────── */
+/*
+  Sits in the top-right of the name-row.
+  Uses a small pulsing dot + text label.
+  No absolute positioning — flows naturally in flex.
+*/
 .avail-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-size: 0.68rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    font-size: 0.67rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    padding: 3px 9px;
+    letter-spacing: 0.5px;
+    padding: 4px 9px 4px 7px;
     border-radius: 50px;
     white-space: nowrap;
+    align-self: flex-start;   /* stay at top when name wraps */
+    margin-top: 1px;
 }
 .badge-avail   { background: #dcfce7; color: #15803d; }
 .badge-unavail { background: #f1f5f9; color: var(--muted); }
 
-/* Divider */
+/* Small inline dot inside the badge */
+.avail-dot-inline {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.avail-dot-inline.available {
+    background: var(--green);
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
+    animation: pulse-green 2s infinite;
+}
+.avail-dot-inline.unavailable {
+    background: #cbd5e1;
+}
+@keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
+    50%       { box-shadow: 0 0 0 4px rgba(34,197,94,0.1); }
+}
+
+/* ── DIVIDER ────────────────────────────── */
 .ac-divider { height: 1px; background: var(--line); margin: 0 20px; }
 
-/* Details */
+/* ── DETAILS ────────────────────────────── */
 .ac-details {
     padding: 16px 20px;
     display: flex;
@@ -394,8 +435,24 @@ body {
 }
 .ac-email { color: var(--accent); font-weight: 500; word-break: break-all; }
 
-/* Interest / expertise tags */
-.ac-interests { display: flex; flex-wrap: wrap; gap: 5px; }
+/* ── TAG GROUPS ─────────────────────────── */
+.ac-interests-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ac-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* Tags hidden when collapsed are set via JS; CSS handles the wrapper state */
+.ac-tags-collapsed .interest-tag:nth-child(n+4) {
+    /* JS handles hide/show; this is a no-op fallback */
+}
+
 .interest-tag {
     font-size: 0.72rem;
     font-weight: 600;
@@ -404,6 +461,8 @@ body {
     background: linear-gradient(135deg, #eef3ff, #dbeafe);
     color: var(--accent);
     border: 1px solid #bfdbfe;
+    line-height: 1.5;
+    white-space: nowrap;
 }
 .expertise-tag {
     background: linear-gradient(135deg, #f0fdf4, #dcfce7);
@@ -411,7 +470,31 @@ body {
     border-color: #bbf7d0;
 }
 
-/* Footer */
+/* ── SHOW MORE BUTTON ───────────────────── */
+.show-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color .15s;
+    width: fit-content;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(37,99,255,0.3);
+}
+.show-more-btn:hover {
+    color: #1d4ed8;
+    text-decoration-color: #1d4ed8;
+}
+
+/* ── FOOTER ─────────────────────────────── */
 .ac-footer {
     padding: 14px 20px;
     border-top: 1px solid var(--line);
@@ -442,6 +525,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
     width: 100%;
     padding: 10px 16px;
     font-family: 'Outfit', sans-serif;
@@ -481,7 +565,7 @@ body {
 }
 .empty-sub { font-size: 0.86rem; color: var(--muted); max-width: 340px; line-height: 1.6; }
 
-/* ── FOOTER ─────────────────────────────── */
+/* ── SITE FOOTER ────────────────────────── */
 .footer { border-top: 1px solid var(--line); padding: 22px 32px; text-align: center; }
 .footer-inner { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--navy); }
@@ -489,12 +573,27 @@ body {
 .footer-copy { font-size: 0.78rem; color: var(--muted); }
 
 /* ── RESPONSIVE ─────────────────────────── */
+@media (max-width: 768px) {
+    .advisors-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+}
+
 @media (max-width: 640px) {
     .navbar { padding: 0 16px; }
     .nav-links { display: none; }
     .page-header { padding: 36px 20px 40px; }
     .page-title { font-size: 1.6rem; }
+
     .toolbar { flex-direction: column; align-items: flex-start; }
+    .toolbar-right { width: 100%; }
     .search-input { width: 100%; }
+
     .advisors-grid { grid-template-columns: 1fr; }
+
+    .ac-name { font-size: 0.93rem; }
+    .avail-badge { font-size: 0.63rem; padding: 3px 7px 3px 6px; }
+}
+
+@media (max-width: 400px) {
+    .ac-top { gap: 10px; }
+    .ac-avatar, .ac-avatar-img { width: 46px; height: 46px; }
 }

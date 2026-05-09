@@ -456,11 +456,45 @@ a { text-decoration: none; color: inherit; }
 
 .td-actions { text-align: right; }
 
-/* Delete row button */
+/* Actions cell — flex row, right-aligned */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+/* ── Edit row button ── */
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  padding: 6px 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .14s, color .14s, border-color .14s, transform .14s;
+  white-space: nowrap;
+}
+.btn-edit:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* ── Delete row button ── */
 .btn-delete {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-family: 'Outfit', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   color: #be123c;
@@ -471,6 +505,7 @@ a { text-decoration: none; color: inherit; }
   cursor: pointer;
   transition: background .14s, color .14s, border-color .14s, transform .14s;
   text-decoration: none;
+  white-space: nowrap;
 }
 .btn-delete:hover {
   background: var(--coral);
@@ -585,6 +620,12 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 2px 8px rgba(37,99,255,0.3);
 }
 
+/* Edit modal icon — teal/cyan tint to visually distinguish from Add */
+.modal-icon-wrap--edit {
+  background: linear-gradient(135deg, #0284c7, var(--accent2));
+  box-shadow: 0 2px 8px rgba(14,165,233,0.3);
+}
+
 .modal-title {
   font-family: 'Syne', sans-serif;
   font-size: 1rem;
@@ -688,6 +729,13 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,99,255,0.38); }
 
+/* Save Changes button — teal tint, visually distinct from Add */
+.btn-submit--edit {
+  background: linear-gradient(135deg, #0284c7, var(--accent2));
+  box-shadow: 0 3px 10px rgba(14,165,233,0.28);
+}
+.btn-submit--edit:hover { box-shadow: 0 6px 18px rgba(14,165,233,0.38); }
+
 /* Delete modal specifics */
 .modal-delete {
   max-width: 420px;
@@ -751,10 +799,32 @@ a { text-decoration: none; color: inherit; }
 
   .page-content { padding: 24px 20px 48px; }
   .panel-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+  /* Hide secondary columns on small screens */
   .td-desc { display: none; }
   .td-date { display: none; }
+
+  /* Stack action buttons vertically on small screens */
+  .actions-cell {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
 }
 
 @media (max-width: 480px) {
   .btn-add span, .btn-add-sm span { display: none; }
+
+  /* Icon-only action buttons on very small screens */
+  .btn-edit,
+  .btn-delete {
+    padding: 6px 10px;
+    font-size: 0;        /* hide text */
+    gap: 0;
+  }
+  .btn-edit svg,
+  .btn-delete svg {
+    width: 14px;
+    height: 14px;
+  }
 }

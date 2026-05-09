@@ -2,7 +2,7 @@ const database = require('./db');
 
 async function getAdvisors(){
     try{
-        const sql = "select u.user_id , u.full_name , u.email , d.department_name , a.areas_of_expertise , a.available FROM users AS u INNER JOIN departments AS d INNER JOIN advisors AS a ON u.user_id = a.advisor_id AND d.department_id = u.department"
+        const sql = "select u.user_id , u.full_name , u.email , d.department_name , a.areas_of_expertise , a.academic_title , a. research  , a.available FROM users AS u INNER JOIN departments AS d INNER JOIN advisors AS a ON u.user_id = a.advisor_id AND d.department_id = u.department"
         const [rows] = await database.pool.execute(sql);
         return rows;
 

@@ -176,6 +176,23 @@ adminRouters.post('/categories/add', isAdmin ,async(req , res)=>{
     }
 });
 
+adminRouters.patch('/categories/:id/edit' , isAdmin , async(req , res)=>{
+    try{
+        const {categoryId , categoryName , categoryDescription} = req.body;
+        const result = await updateCategory(categoryId , categoryName , categoryDescription);
+        if(result){
+            return res.redirect("/admin/categories");
+        }
+        else{
+            return res.status(500).render("500");
+        }
+        
+    }catch(e){
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
+}); // not applied yet but its important .
+
 adminRouters.get('/categories/:categoryId/delete' , isAdmin , async(req , res)=>{
     try{
         const categoryId = req.params.categoryId;

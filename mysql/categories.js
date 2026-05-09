@@ -38,6 +38,7 @@ async function addCategory(name, description){
         throw e;
     }
 }
+
 async function updateCategory(id , name,  description){
     try{
         const sql = "UPDATE categories SET category_name = ? , category_description = ? WHERE category_id = ?";

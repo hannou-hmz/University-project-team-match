@@ -14,229 +14,295 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-    <a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
-    <div class="nav-links">
-        <a href="/student/projects" class="nav-link">Browse Projects</a>
-        <a href="/student/myprojects" class="nav-link">My Projects</a>
-        <a href="/student/applications" class="nav-link">My Applications</a>
-        <a href="/student/announcements" class="nav-link">Announcements</a>
-        <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
-        <a href="/student/requests" class="nav-link">Advisor Requests</a>
-        <a href="/student/applicants" class="nav-link">Applicants</a>
-    </div>
-    <div class="nav-actions">
-        <a href="/student/profile" class="nav-btn-outline">Profile</a>
-        <a href="/logout" class="nav-btn-logout">Logout</a>
-    </div>
+<a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
+<div class="nav-links">
+    <a href="/student/projects" class="nav-link">Browse Projects</a>
+    <a href="/student/myprojects" class="nav-link">My Projects</a>
+    <a href="/student/applications" class="nav-link">My Applications</a>
+    <a href="/student/announcements" class="nav-link">Announcements</a>
+    <a href="/student/find/advisors" class="nav-link">Find Advisor</a>
+    <a href="/student/requests" class="nav-link">Advisor Requests</a>
+    <a href="/student/applicants" class="nav-link">Applicants</a>
+</div>
+<div class="nav-actions">
+    <a href="/student/profile" class="nav-btn-outline">Profile</a>
+    <a href="/logout" class="nav-btn-logout">Logout</a>
+</div>
 </nav>
 
 <!-- Page Header -->
 <div class="page-header">
-    <div class="page-header-inner">
-        <div class="page-eyebrow">Faculty Directory</div>
-        <h1 class="page-title">Find an Advisor</h1>
-        <p class="page-sub">Connect with faculty members who can guide your project to success.</p>
-    </div>
+<div class="page-header-inner">
+    <div class="page-eyebrow">Faculty Directory</div>
+    <h1 class="page-title">Find an Advisor</h1>
+    <p class="page-sub">Connect with faculty members who can guide your project to success.</p>
+</div>
 </div>
 
 <div class="container">
 
-    <% if (advisors && advisors.length > 0) { %>
+<% if (advisors && advisors.length > 0) { %>
 
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="toolbar-left">
-                <span class="results-count">
-                    <strong><%= advisors.length %></strong> advisor<%= advisors.length !== 1 ? 's' : '' %> available
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <span class="results-count">
+                <strong><%= advisors.length %></strong> advisor<%= advisors.length !== 1 ? 's' : '' %> available
+            </span>
+        </div>
+        <div class="toolbar-right">
+            <div class="search-wrap">
+                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by name, department, or interest...">
+            </div>
+            <label class="avail-toggle">
+                <input type="checkbox" id="availableOnly">
+                <span class="avail-check"></span>
+                Available only
+            </label>
+        </div>
+    </div>
+
+    <!-- Advisors Grid -->
+    <div class="advisors-grid" id="advisorsGrid">
+
+        <% advisors.forEach(advisor => { %>
+        <div class="advisor-card"
+                data-name="<%= advisor.full_name %>"
+                data-dept="<%= advisor.department_name %>"
+                data-interests="<%= advisor.areas_of_interest %>"
+                data-available="<%= advisor.available ? 'true' : 'false' %>">
+
+            <!-- Colored top bar is a ::before pseudo in CSS -->
+
+            <!-- Top section -->
+            <div class="ac-top">
+                <!-- Avatar -->
+                <div class="ac-avatar-wrap">
+                    <% if (advisor.profile_photo) { %>
+                        <img class="ac-avatar-img" src="<%= advisor.profile_photo %>" alt="<%= advisor.full_name %>">
+                    <% } else { %>
+                        <div class="ac-avatar">
+                            <%= advisor.full_name ? advisor.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'AD' %>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Identity -->
+                <div class="ac-identity">
+                    <h3 class="ac-name"><%= advisor.full_name %></h3>
+                    <% if (advisor.academic_title) { %>
+                        <div class="ac-title-text"><%= advisor.academic_title %></div>
+                    <% } %>
+                    <div class="ac-dept">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <%= advisor.department_name %>
+                    </div>
+                </div>
+
+                <!-- Availability badge — top-right of ac-top -->
+                <span class="avail-badge <%= advisor.available ? 'badge-avail' : 'badge-unavail' %>">
+                    <span class="avail-dot-inline <%= advisor.available ? 'available' : 'unavailable' %>"></span>
+                    <%= advisor.available ? "Available" : "Unavailable" %>
                 </span>
             </div>
-            <div class="toolbar-right">
-                <div class="search-wrap">
-                    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search by name, department, or interest...">
+
+            <!-- Divider -->
+            <div class="ac-divider"></div>
+
+            <!-- Details -->
+            <div class="ac-details">
+
+                <!-- Academic Title (explicit display) -->
+                <% if (advisor.academic_title) { %>
+                <div class="ac-detail-row">
+                    <div class="ac-detail-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        Academic Title
+                    </div>
+                    <p class="ac-detail-value"><%= advisor.academic_title %></p>
                 </div>
-                <label class="avail-toggle">
-                    <input type="checkbox" id="availableOnly">
-                    <span class="avail-check"></span>
-                    Available only
-                </label>
-            </div>
-        </div>
+                <% } %>
 
-        <!-- Advisors Grid -->
-        <div class="advisors-grid" id="advisorsGrid">
-
-            <% advisors.forEach(advisor => { %>
-            <div class="advisor-card"
-                    data-name="<%= advisor.full_name %>"
-                    data-dept="<%= advisor.department_name %>"
-                    data-interests="<%= advisor.areas_of_interest %>"
-                    data-available="<%= advisor.available ? 'true' : 'false' %>">
-
-                <!-- Top section -->
-                <div class="ac-top">
-                    <div class="ac-avatar-wrap">
-                        <% if (advisor.profile_photo) { %>
-                            <img class="ac-avatar-img" src="<%= advisor.profile_photo %>" alt="<%= advisor.full_name %>">
-                        <% } else { %>
-                            <div class="ac-avatar">
-                                <%= advisor.full_name ? advisor.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'AD' %>
-                            </div>
-                        <% } %>
-                            
-                        <span class="avail-dot <%= advisor.available ? 'available' : 'unavailable' %>"
-                                title="<%= advisor.available ? 'Available' : 'Not available' %>"></span>
+                <!-- Research -->
+                <% if (advisor.researches) { %>
+                <div class="ac-detail-row">
+                    <div class="ac-detail-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        Research
                     </div>
-                    
-                    <div class="ac-identity">
-                        <h3 class="ac-name"><%= advisor.full_name %></h3>
-                        <div class="ac-title-text"><%= advisor.academic_title %></div>
-                        <div class="ac-dept">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <%= advisor.department_name %>
-                        </div>
-                    </div>
-
-                    <span class="avail-badge <%= advisor.is_available ? 'badge-avail' : 'badge-unavail' %>">
-                        <%= advisor.available ? "Available" : "Unavailable" %>
-                    </span>
+                    <p class="ac-detail-value"><%= advisor.researches %></p>
                 </div>
+                <% } %>
 
-                <!-- Divider -->
-                <div class="ac-divider"></div>
-
-                <!-- Details -->
-                <div class="ac-details">
-
-                    <% if (advisor.researches) { %>
-                    <div class="ac-detail-row">
-                        <div class="ac-detail-label">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                            Research
-                        </div>
-                        <p class="ac-detail-value"><%= advisor.researches %></p>
+                <!-- Areas of Expertise with show more/less -->
+                <% if (advisor.areas_of_expertise) { %>
+                <div class="ac-detail-row">
+                    <div class="ac-detail-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        Areas of Expertise
                     </div>
-                    <% } %>
-
-                    <% if (advisor.areas_of_expertise) { %>
-                    <div class="ac-detail-row">
-                        <div class="ac-detail-label">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                            Areas of Expertise
-                        </div>
-                        <div class="ac-interests">
+                    <div class="ac-interests-wrap">
+                        <div class="ac-interests ac-tags-collapsed" data-max="3">
                             <% advisor.areas_of_expertise.split(',').forEach(area => { %>
                                 <span class="interest-tag expertise-tag"><%= area.trim() %></span>
                             <% }) %>
                         </div>
+                        <% if (advisor.areas_of_expertise.split(',').length > 3) { %>
+                            <button class="show-more-btn" type="button" onclick="toggleTags(this)">
+                                +<%= advisor.areas_of_expertise.split(',').length - 3 %> more
+                            </button>
+                        <% } %>
                     </div>
-                    <% } %>
+                </div>
+                <% } %>
 
-                    <% if (advisor.areas_of_interest) { %>
-                    <div class="ac-detail-row">
-                        <div class="ac-detail-label">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            Areas of Interest
-                        </div>
-                        <div class="ac-interests">
+                <!-- Areas of Interest with show more/less -->
+                <% if (advisor.areas_of_interest) { %>
+                <div class="ac-detail-row">
+                    <div class="ac-detail-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Areas of Interest
+                    </div>
+                    <div class="ac-interests-wrap">
+                        <div class="ac-interests ac-tags-collapsed" data-max="3">
                             <% advisor.areas_of_interest.split(',').forEach(area => { %>
                                 <span class="interest-tag"><%= area.trim() %></span>
                             <% }) %>
                         </div>
+                        <% if (advisor.areas_of_interest.split(',').length > 3) { %>
+                            <button class="show-more-btn" type="button" onclick="toggleTags(this)">
+                                +<%= advisor.areas_of_interest.split(',').length - 3 %> more
+                            </button>
+                        <% } %>
                     </div>
-                    <% } %>
-
-                    <div class="ac-detail-row">
-                        <div class="ac-detail-label">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                            Email
-                        </div>
-                        <p class="ac-detail-value ac-email"><%= advisor.email %></p>
-                    </div>
-
                 </div>
+                <% } %>
 
-                <!-- Footer -->
-                <div class="ac-footer">
-                    <% if (advisor.available) { %>
-                        <a class="request-btn" href="/student/requests/<%= advisor.user_id %>/advisors">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            Send Request
-                        </a>
-                    <% } else { %>
-                        <span class="request-btn-disabled">Currently Unavailable</span>
-                    <% } %>
+                <!-- Email -->
+                <div class="ac-detail-row">
+                    <div class="ac-detail-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Email
+                    </div>
+                    <p class="ac-detail-value ac-email"><%= advisor.email %></p>
                 </div>
 
             </div>
-            <% }) %>
 
-        </div>
-
-        <!-- Empty search state -->
-        <div class="empty-state" id="emptyState" style="display:none;">
-            <div class="empty-icon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <!-- Footer -->
+            <div class="ac-footer">
+                <% if (advisor.available) { %>
+                    <a class="request-btn" href="/student/requests/<%= advisor.user_id %>/advisors">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Send Request
+                    </a>
+                <% } else { %>
+                    <span class="request-btn-disabled">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                        Currently Unavailable
+                    </span>
+                <% } %>
             </div>
-            <div class="empty-title">No advisors match your search</div>
-            <div class="empty-sub">Try a different name, department, or clear the filter.</div>
+
         </div>
+        <% }) %>
 
-    <% } else { %>
+    </div>
 
-        <!-- Empty State -->
-        <div class="empty-state">
-            <div class="empty-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <div class="empty-title">No advisors found</div>
-            <p class="empty-sub">There are no faculty advisors registered on the platform yet. Check back soon.</p>
+    <!-- Empty search state -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
+        <div class="empty-title">No advisors match your search</div>
+        <div class="empty-sub">Try a different name, department, or clear the filter.</div>
+    </div>
 
-    <% } %>
+<% } else { %>
+
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="empty-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="empty-title">No advisors found</div>
+        <p class="empty-sub">There are no faculty advisors registered on the platform yet. Check back soon.</p>
+    </div>
+
+<% } %>
 
 </div>
 
 <footer class="footer">
-    <div class="footer-inner">
-        <span class="footer-logo">Team<span>Match</span></span>
-        <span class="footer-copy">University Project Collaboration Platform</span>
-    </div>
+<div class="footer-inner">
+    <span class="footer-logo">Team<span>Match</span></span>
+    <span class="footer-copy">University Project Collaboration Platform</span>
+</div>
 </footer>
 
 <script>
-    const searchInput = document.getElementById('searchInput');
-    const availableOnly = document.getElementById('availableOnly');
-    const cards = document.querySelectorAll('.advisor-card');
-    const emptyState = document.getElementById('emptyState');
+/* ── Search & filter ── */
+const searchInput  = document.getElementById('searchInput');
+const availableOnly = document.getElementById('availableOnly');
+const cards        = document.querySelectorAll('.advisor-card');
+const emptyState   = document.getElementById('emptyState');
 
-    function filterAdvisors() {
-        const query = searchInput.value.toLowerCase();
-        const onlyAvail = availableOnly.checked;
-        let visible = 0;
+function filterAdvisors() {
+    const query    = searchInput.value.toLowerCase();
+    const onlyAvail = availableOnly.checked;
+    let visible    = 0;
 
-        cards.forEach(card => {
-            const name      = (card.dataset.name || '').toLowerCase();
-            const dept      = (card.dataset.dept || '').toLowerCase();
-            const interests = (card.dataset.interests || '').toLowerCase();
-            const isAvail   = card.dataset.available === 'true';
+    cards.forEach(card => {
+        const name      = (card.dataset.name || '').toLowerCase();
+        const dept      = (card.dataset.dept || '').toLowerCase();
+        const interests = (card.dataset.interests || '').toLowerCase();
+        const isAvail   = card.dataset.available === 'true';
 
-            const matchesSearch   = !query || name.includes(query) || dept.includes(query) || interests.includes(query);
-            const matchesAvail    = !onlyAvail || isAvail;
+        const matchesSearch = !query || name.includes(query) || dept.includes(query) || interests.includes(query);
+        const matchesAvail  = !onlyAvail || isAvail;
 
-            if (matchesSearch && matchesAvail) {
-                card.style.display = '';
-                visible++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        if (matchesSearch && matchesAvail) {
+            card.style.display = '';
+            visible++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
 
-        if (emptyState) emptyState.style.display = visible === 0 ? 'flex' : 'none';
+    if (emptyState) emptyState.style.display = visible === 0 ? 'flex' : 'none';
+}
+
+if (searchInput)    searchInput.addEventListener('input', filterAdvisors);
+if (availableOnly)  availableOnly.addEventListener('change', filterAdvisors);
+
+/* ── Show more / less tags ── */
+function toggleTags(btn) {
+    const wrap = btn.previousElementSibling; // .ac-interests
+    const tags  = Array.from(wrap.querySelectorAll('.interest-tag'));
+    const max   = parseInt(wrap.dataset.max, 10) || 3;
+    const isCollapsed = wrap.classList.contains('ac-tags-collapsed');
+
+    if (isCollapsed) {
+        // Expand: show all
+        wrap.classList.remove('ac-tags-collapsed');
+        tags.forEach(t => t.style.display = '');
+        btn.textContent = 'Show less';
+    } else {
+        // Collapse: hide extras
+        wrap.classList.add('ac-tags-collapsed');
+        tags.forEach((t, i) => { t.style.display = i < max ? '' : 'none'; });
+        const hidden = tags.length - max;
+        btn.textContent = `+${hidden} more`;
     }
+}
 
-    if (searchInput)   searchInput.addEventListener('input', filterAdvisors);
-    if (availableOnly) availableOnly.addEventListener('change', filterAdvisors);
+/* Apply initial collapse on page load */
+document.querySelectorAll('.ac-tags-collapsed').forEach(wrap => {
+    const tags = Array.from(wrap.querySelectorAll('.interest-tag'));
+    const max  = parseInt(wrap.dataset.max, 10) || 3;
+    tags.forEach((t, i) => { if (i >= max) t.style.display = 'none'; });
+});
 </script>
 
 </body>
