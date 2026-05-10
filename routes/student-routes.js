@@ -353,19 +353,6 @@ studentRoutes.post('/profile/update' , isStudent , limiter ,async(req , res)=>{
     }
 });
 
-studentRoutes.get('/profile/change-password' , isStudent , limiter ,(req , res)=>{
-
-    try{
-        return res.render("st-change-password");
-    }
-
-    catch(e){
-        console.log(e.message);
-        return res.status(500).render("500");
-    }
-    
-});
-
 studentRoutes.post('/profile/change-password' , isStudent , limiter ,async(req , res)=>  {
     try{
         const studentId = req.session.studentId;
@@ -373,6 +360,7 @@ studentRoutes.post('/profile/change-password' , isStudent , limiter ,async(req ,
         const checkCurrentPasswd = await compareUserPassword(studentId , currentPassword);
         
         if(!checkCurrentPasswd){
+            console.log(`Wrong current password ..`);
             return res.status(500).render("500");
         }
 
