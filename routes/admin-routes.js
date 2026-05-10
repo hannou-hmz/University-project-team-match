@@ -6,7 +6,7 @@ const adminRouters = express.Router();
 const db = require('../mysql/db');
 const {countAnnouncements, countProjects, countCategories, countUsers} = require('../mysql/admins');
 const {getAdmin , getAllUsers , deleteUsers, getUsersRoles , changeUserRole } = require('../mysql/users');
-const {getCategories ,addCategory, deleteCategory} = require('../mysql/categories');
+const {getCategories ,addCategory, updateCategory, deleteCategory} = require('../mysql/categories');
 const {addAnnouncement , getAnnouncements , deleteAnnouncement} = require('../mysql/announcements');
 const {createProjects , getProjects , myProjects , deleteProjects} = require('../mysql/projects');
 const {createAdvisorRow} = require('../mysql/advisors');
@@ -176,10 +176,12 @@ adminRouters.post('/categories/add', isAdmin ,async(req , res)=>{
     }
 });
 
-adminRouters.patch('/categories/:id/edit' , isAdmin , async(req , res)=>{
+adminRouters.post('/categories/:id/edit' , isAdmin , async(req , res)=>{
     try{
-        const {categoryId , categoryName , categoryDescription} = req.body;
+        const categoryId = req.params.id
+        const {categoryName , categoryDescription} = req.body;
         const result = await updateCategory(categoryId , categoryName , categoryDescription);
+        
         if(result){
             return res.redirect("/admin/categories");
         }
