@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Announcements — TeamMatch</title>
+<link rel="stylesheet" href="/advisor-styling/announcements.css">
+<link rel="icon" href="/img/fav.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<%
+const isAvailable = !!(advisor.is_available || advisor.available);
+
+/* ── Helpers ── */
+/* Collect unique categories from the announcements array */
+const categoryMap = {};
+announcements.forEach(a => {
+  if (!categoryMap[a.category_id]) {
+    categoryMap[a.category_id] = { id: a.category_id, name: a.category_name, count: 0 };
+  }
+  categoryMap[a.category_id].count++;
+});
+const categories = Object.values(categoryMap);
+
+const urgentCount = announcements.filter(a => a.is_urgent).length;
+const totalCount  = announcements.length;
+
+/* Format date helper — used inline below */
+function fmtDate(raw) {
+  if (!raw) return '';
+  const d = new Date(raw);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+%>
+
+<!-- Mobile overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Brand -->
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor"/><path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </div>
+    <div class="sb-brand-text">
+      <a href="/advisor/dashboard" class="sb-name">Team<em>Match</em></a>
+      <span class="sb-role">Advisor Portal</span>
+    </div>
+  </div>
+
+  <!-- Advisor identity card -->
+  <div id="profile" class="sb-profile" onclick="window.location.href='/advisor/profile'" title="View profile">
+    <div class="sp-avatar">
+      <%= advisor.full_name ? advisor.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'AD' %>
+    </div>
+    <div class="sp-info">
+      <div class="sp-name"><%= advisor.full_name || 'Advisor' %></div>
+      <% if (advisor.academic_title) { %>
+      <div class="sp-title"><%= advisor.academic_title %></div>
+      <% } %>
+    </div>
+    <div class="sp-avail-dot <%= isAvailable ? 'dot-on' : 'dot-off' %>"
+         title="<%= isAvailable ? 'Available' : 'Unavailable' %>"></div>
+  </div>
+
+  <!-- Availability strip -->
+  <div class="sb-avail-strip <%= isAvailable ? 'avail-on' : 'avail-off' %>">
+    <span class="sa-label"><%= isAvailable ? 'Available for advising' : 'Not accepting requests' %></span>
+    <a href="/advisor/profile" class="sa-link">Change →</a>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <!-- Nav -->
+  <nav class="sb-nav">
+    <div class="sb-nav-label">Navigation</div>
+
+    <a href="/advisor/dashboard" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      </span>
+      <span class="sb-link-label">Dashboard</span>
+    </a>
+
+    <a href="/advisor/projects" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+      </span>
+      <span class="sb-link-label">My Projects</span>
+    </a>
+
+    <a href="/advisor/requests" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <span class="sb-link-label">Student Requests</span>
+      <% if (typeof pending !== 'undefined' && pending > 0) { %>
+      <span class="sb-badge"><%= pending %></span>
+      <% } %>
+    </a>
+
+    <a href="/advisor/requests/rejected" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </span>
+      <span class="sb-link-label">Rejected Requests</span>
+      <% if (typeof rejected !== 'undefined' && rejected > 0) { %>
+      <span class="sb-badge-coral"><%= rejected %></span>
+      <% } %>
+    </a>
+
+    <a href="/advisor/announcements" class="sb-link active">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </span>
+      <span class="sb-link-label">Announcements</span>
+      <% if (urgentCount > 0) { %>
+      <span class="sb-badge-coral"><%= urgentCount %></span>
+      <% } %>
+    </a>
+
+    <a href="/advisor/profile" class="sb-link">
+      <span class="sb-link-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      <span class="sb-link-label">My Profile</span>
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="sb-footer">
+    <a href="/logout" class="sb-logout-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </div>
+
+</aside>
+
+<!-- ═══════════════════════════════════════
+     LAYOUT MAIN
+════════════════════════════════════════ -->
+<div class="layout-main">
+
+  <!-- ── Topbar ── -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">
+        <span class="tb-root">TeamMatch</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="tb-current">Announcements</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-date" id="topbarDate"></div>
+      <div class="tb-sep"></div>
+      <div class="topbar-avail-pill <%= isAvailable ? 'pill-on' : 'pill-off' %>">
+        <span class="pill-dot"></span>
+        <%= isAvailable ? 'Available' : 'Unavailable' %>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Page content ── -->
+  <main class="page-content">
+
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <div class="wb-inner">
+        <div class="wb-eyebrow">Advisor Portal</div>
+        <h1 class="wb-title">Announcements</h1>
+        <div class="wb-meta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <%= totalCount %> announcement<%= totalCount !== 1 ? 's' : '' %>
+          <% if (urgentCount > 0) { %>
+          <span class="wb-sep">·</span>
+          <span class="wb-urgent-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <%= urgentCount %> urgent
+          </span>
+          <% } %>
+        </div>
+      </div>
+      <div class="wb-orb"></div>
+    </div>
+
+    <!-- ── Filter bar ── -->
+    <% if (categories.length > 0) { %>
+    <div class="filter-bar">
+      <span class="filter-bar-label">Filter</span>
+      <div class="filter-tabs" id="filterTabs">
+
+        <button class="filter-tab active" data-filter="all" onclick="filterAnnouncements('all', this)">
+          All
+          <span class="ft-count"><%= totalCount %></span>
+        </button>
+
+        <% if (urgentCount > 0) { %>
+        <button class="filter-tab urgent-tab" data-filter="urgent" onclick="filterAnnouncements('urgent', this)">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Urgent
+          <span class="ft-count"><%= urgentCount %></span>
+        </button>
+        <% } %>
+
+        <% categories.forEach(cat => { %>
+        <button class="filter-tab"
+                data-filter="cat-<%= cat.id %>"
+                onclick="filterAnnouncements('cat-<%= cat.id %>', this)">
+          <%= cat.name %>
+          <span class="ft-count"><%= cat.count %></span>
+        </button>
+        <% }); %>
+
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ── Section eyebrow ── -->
+    <div class="section-eyebrow">All Announcements</div>
+
+    <!-- ── Announcements list ── -->
+    <% if (announcements && announcements.length > 0) { %>
+
+    <div class="ann-list" id="annList">
+
+      <% announcements.forEach((ann, i) => { %>
+      <div class="ann-card <%= ann.is_urgent ? 'urgent' : '' %>"
+           data-category="cat-<%= ann.category_id %>"
+           data-urgent="<%= ann.is_urgent ? 'true' : 'false' %>"
+           style="transition-delay: <%= (i * 60) %>ms">
+
+        <!-- Left accent strip -->
+        <div class="ann-card-strip <%= ann.is_urgent ? 'strip-urgent' : 'strip-normal' %>"></div>
+
+        <!-- Card body -->
+        <div class="ann-card-body">
+
+          <!-- Top row -->
+          <div class="ann-card-top">
+
+            <!-- Category pill -->
+            <span class="ann-category-pill">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <%= ann.category_name %>
+            </span>
+
+            <!-- Urgent badge -->
+            <% if (ann.is_urgent) { %>
+            <span class="ann-urgent-badge">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Urgent
+            </span>
+            <% } %>
+
+            <!-- Date -->
+            <div class="ann-date">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <%= fmtDate(ann.created_at) %>
+            </div>
+
+          </div>
+
+          <!-- Title -->
+          <div class="ann-title"><%= ann.title %></div>
+
+          <!-- Description -->
+          <div class="ann-desc collapsed" id="desc-<%= i %>"><%= ann.description %></div>
+          <button class="ann-expand-btn" id="btn-<%= i %>" onclick="toggleDesc(<%= i %>)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="btn-icon-<%= i %>"><polyline points="6 9 12 15 18 9"/></svg>
+            <span id="btn-text-<%= i %>">Read more</span>
+          </button>
+
+        </div>
+      </div>
+      <% }); %>
+
+    </div>
+
+    <% } else { %>
+
+    <!-- Empty state -->
+    <div class="ann-empty">
+      <div class="ann-empty-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="ann-empty-title">No announcements yet</div>
+      <div class="ann-empty-desc">There are no announcements to display at the moment. Check back later.</div>
+    </div>
+
+    <% } %>
+
+  </main>
+</div>
+
+<script>
+  /* ── Topbar date ── */
+  const el = document.getElementById('topbarDate');
+  if (el) {
+    el.textContent = new Date().toLocaleDateString('en-GB', {
+      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+    });
+  }
+
+  /* ── Sidebar ── */
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('visible');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('visible');
+  }
+
+  /* ── Profile click ── */
+  document.getElementById('profile').onclick = function () {
+    window.location.href = '/advisor/profile';
+  };
+
+  /* ── Stagger-in cards ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.ann-card');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    cards.forEach(c => observer.observe(c));
+
+    /* Hide expand button for short descriptions */
+    document.querySelectorAll('.ann-desc').forEach((desc, i) => {
+      const btn = document.getElementById('btn-' + i);
+      if (desc.scrollHeight <= desc.clientHeight + 4) {
+        if (btn) btn.style.display = 'none';
+      }
+    });
+  });
+
+  /* ── Expand / collapse description ── */
+  function toggleDesc(i) {
+    const desc = document.getElementById('desc-' + i);
+    const btn  = document.getElementById('btn-' + i);
+    const icon = document.getElementById('btn-icon-' + i);
+    const text = document.getElementById('btn-text-' + i);
+
+    const isCollapsed = desc.classList.contains('collapsed');
+    desc.classList.toggle('collapsed', !isCollapsed);
+    icon.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+    text.textContent     = isCollapsed ? 'Show less' : 'Read more';
+  }
+
+  /* ── Category filter ── */
+  function filterAnnouncements(filter, tabEl) {
+    /* Update active tab */
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+
+    /* Show / hide cards */
+    document.querySelectorAll('.ann-card').forEach(card => {
+      let show = false;
+      if (filter === 'all') {
+        show = true;
+      } else if (filter === 'urgent') {
+        show = card.dataset.urgent === 'true';
+      } else {
+        show = card.dataset.category === filter;
+      }
+
+      if (show) {
+        card.style.display = 'flex';
+        /* Re-trigger entrance animation */
+        card.classList.remove('visible');
+        requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('visible')));
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    /* Show empty state if nothing visible */
+    const annList = document.getElementById('annList');
+    if (annList) {
+      const anyVisible = [...document.querySelectorAll('.ann-card')].some(c => c.style.display !== 'none');
+      annList.style.display = anyVisible ? 'flex' : 'none';
+
+      let noResult = document.getElementById('noResultMsg');
+      if (!anyVisible) {
+        if (!noResult) {
+          noResult = document.createElement('div');
+          noResult.id = 'noResultMsg';
+          noResult.className = 'ann-empty';
+          noResult.innerHTML = `
+            <div class="ann-empty-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div class="ann-empty-title">No results</div>
+            <div class="ann-empty-desc">No announcements found for this filter.</div>
+          `;
+          annList.parentNode.insertBefore(noResult, annList.nextSibling);
+        }
+        noResult.style.display = 'flex';
+      } else {
+        if (noResult) noResult.style.display = 'none';
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

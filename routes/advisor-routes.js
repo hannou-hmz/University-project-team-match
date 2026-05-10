@@ -9,7 +9,7 @@ const {advisorDashboard , getRequests, getAdvisorProfileInfo, getPendingRequests
     countRejectedRequests , countPendingRequests,
     getAcceptedRequests,
     getRejectedRequests} = require('../mysql/advisors');
-
+const {getAnnouncements} = require('../mysql/announcements');
 const { getUser , getUserById, changeUserPassword , compareUserPassword } = require('../mysql/users');
 
 
@@ -44,9 +44,12 @@ advisorRouters.get('/dashboard' , isAdvisor, async(req , res)=>{
 
 advisorRouters.get('/announcements' , isAdvisor , async(req , res)=>{
     try{
+        const advisorId = req.session.advisorId; 
         const announcements = await getAnnouncements();
-        return res.render("" , {
-            
+        const advisorInfos = await getAdvisorProfileInfo(advisorId);
+        return res.render("advisor-announcements" , {
+            announcements : announcements,
+            advisor : advisorInfos
         });
     }
     catch(e){
