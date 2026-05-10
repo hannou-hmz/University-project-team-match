@@ -66,8 +66,14 @@
             <span class="status-dot"></span>
             <%= app.status ? app.status.charAt(0).toUpperCase() + app.status.slice(1).toLowerCase() : 'Pending' %>
           </span>
-          <form action="/student/applications/<%= app.request_id %>/delete?_method=DELETE" method="POST">
-            <button type="submit" class="withdraw-btn" onclick="return confirm('Withdraw this application?')" title="Withdraw application">
+          <form id="withdraw-form-<%= app.request_id %>" action="/student/applications/<%= app.request_id %>/delete?_method=DELETE" method="POST">
+            <button
+              type="button"
+              class="withdraw-btn"
+              data-request-id="<%= app.request_id %>"
+              data-project-title="<%- app.project_title %>"
+              onclick="openWithdrawModal(this)"
+              title="Withdraw application">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
               Withdraw
             </button>
@@ -160,12 +166,71 @@
 
 </div>
 
+<!-- ══════════════════════════════════════════
+     WITHDRAW CONFIRMATION MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="withdrawModal" aria-modal="true" role="dialog" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-icon-wrap">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    </div>
+    <div class="modal-body">
+      <h2 class="modal-title" id="modal-title">Withdraw Application?</h2>
+      <p class="modal-desc">You're about to withdraw your application for</p>
+      <p class="modal-project-name" id="modal-project-name"></p>
+      <p class="modal-warning">This action is permanent and cannot be undone. The project owner will no longer be able to review your submission.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" id="modalCancelBtn" type="button">Keep Application</button>
+      <button class="modal-btn-confirm" id="modalConfirmBtn" type="button">Yes, Withdraw</button>
+    </div>
+  </div>
+</div>
+
 <footer class="footer">
   <div class="footer-inner">
     <span class="footer-logo">Team<span>Match</span></span>
     <span class="footer-copy">University Project Collaboration Platform</span>
   </div>
 </footer>
+
+<script>
+  let _pendingFormId = null;
+
+  function openWithdrawModal(btn) {
+    const requestId = btn.dataset.requestId;
+    const projectTitle = btn.dataset.projectTitle;
+    _pendingFormId = 'withdraw-form-' + requestId;
+    document.getElementById('modal-project-name').textContent = projectTitle;
+    const modal = document.getElementById('withdrawModal');
+    modal.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('modalCancelBtn').focus();
+  }
+
+  function closeWithdrawModal() {
+    const modal = document.getElementById('withdrawModal');
+    modal.classList.remove('is-visible');
+    document.body.style.overflow = '';
+    _pendingFormId = null;
+  }
+
+  document.getElementById('modalCancelBtn').addEventListener('click', closeWithdrawModal);
+
+  document.getElementById('modalConfirmBtn').addEventListener('click', function () {
+    if (_pendingFormId) {
+      document.getElementById(_pendingFormId).submit();
+    }
+  });
+
+  document.getElementById('withdrawModal').addEventListener('click', function (e) {
+    if (e.target === this) closeWithdrawModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeWithdrawModal();
+  });
+</script>
 
 </body>
 </html>

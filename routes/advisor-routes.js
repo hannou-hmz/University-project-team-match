@@ -10,7 +10,7 @@ const {advisorDashboard , getRequests, getAdvisorProfileInfo, getPendingRequests
     getAcceptedRequests,
     getRejectedRequests} = require('../mysql/advisors');
 
-const { getUser , getUserById } = require('../mysql/users');
+const { getUser , getUserById, changeUserPassword , compareUserPassword } = require('../mysql/users');
 
 
 function isAdvisor(req, res, next){
@@ -174,6 +174,34 @@ advisorRouters.post('/profile' ,isAdvisor, async(req , res)=>{
         const availability = await isAdvisorAvailable(available,advisorId);
         
         return res.redirect('/advisor/profile');
+    }
+
+    catch(e){
+        console.log(e.message);
+        return res.status(500).render("500");
+    }
+});
+
+advisorRouters.post('/profile/change-password' , isAdvisor ,async(req , res)=>  {
+    try{
+        const advisorId = req.session.advisorId;
+        const {currentPassword , newPassword , confirmPassword} = req.body;
+        const checkCurrentPasswd = await compareUserPassword(advisorId , currentPassword);
+        
+        if(!checkCurrentPasswd){
+            return res.status(500).render("500");
+        }
+
+        else{
+            if(newPassword != confirmPassword){
+                console.log(`Confirm password do not match!!`);
+                return res.status(500).render("500")
+            }
+
+            const changePassword = await changeUserPassword(newPassword , advisorId);
+            console.log('Password updated ...');
+            return res.redirect('/advisor/profile');
+        }
     }
 
     catch(e){

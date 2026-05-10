@@ -3,11 +3,11 @@ const path = require('path');
 const limit = require('express-rate-limit');
 const studentRoutes = express.Router();
 const db = require('../mysql/db');
-const {getMyAdvisorRequests , changeStudentPassword ,getStudentProfileInfo, getStudentById ,modifyStudenSkills , modifyStudenBio} = require('../mysql/students');
+const {getMyAdvisorRequests , getStudentProfileInfo, getStudentById ,modifyStudenSkills , modifyStudenBio} = require('../mysql/students');
 const {getCategories ,addCategory, deleteCategory} = require('../mysql/categories');
 const {getAdvisors , requestAdvisor} = require('../mysql/advisors');
 const {getAnnouncements} = require('../mysql/announcements');
-const {compareUserPassword} = require('../mysql/users');
+const {compareUserPassword , changeUserPassword} = require('../mysql/users');
 const {createProjects , getProjects , deleteProjects, myProjects , applyForProjects} = require('../mysql/projects');
 const {submitApplication, myProjectApplications, deleteApplication, getApplicants ,
      acceptApplication , rejectApplication,
@@ -382,7 +382,7 @@ studentRoutes.post('/profile/change-password' , isStudent , limiter ,async(req ,
                 return res.status(500).render("500")
             }
 
-            const changePassword = await changeStudentPassword(newPassword , studentId);
+            const changePassword = await changeUserPassword(newPassword , studentId);
             return res.redirect('/student/profile');
         }
     }

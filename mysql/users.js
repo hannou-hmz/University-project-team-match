@@ -114,6 +114,19 @@ async function compareUserPassword(userId , currentPasswd){
     }
 }
 
+async function changeUserPassword(password , userId){
+
+    try{
+        const hashPasswd = await bcrypt.hash(password , SALT_COUNT);
+        const sql = "UPDATE users SET password = ? WHERE user_id = ?";
+        const [result] = await database.pool.execute(sql , [hashPasswd , userId]);
+    }
+
+    catch(e){
+        throw e;
+    }
+}
+
 async function resetPassword(password , email){
     try{
         const newPassword = await bcrypt.hash(password , SALT_COUNT);
@@ -192,5 +205,6 @@ module.exports = {
     resetPassword,
     deleteUsers,
     changeUserRole,
-    getUserByEmail
+    getUserByEmail,
+    changeUserPassword
 }
