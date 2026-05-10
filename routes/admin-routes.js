@@ -148,7 +148,7 @@ adminRouters.delete('/announcements/:id/delete' , async (req , res)=>{
         return res.status(500).render("500-admin");
     }
 });
-
+ 
 adminRouters.get('/categories' , isAdmin ,async(req , res)=>{
     try{
         const categories = await getCategories();
