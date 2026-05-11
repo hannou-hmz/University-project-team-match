@@ -1,313 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile — TeamMatch</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/student-styling/student-profile.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — TeamMatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/student-styling/student-profile.css">
 </head>
 <body>
 
 <!-- ══ NAVBAR ══════════════════════════════════════ -->
 <nav class="navbar">
-    <a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
-    <div class="nav-actions">
-        <a href="/student/homepage" class="nav-back">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Dashboard
-        </a>
-        <a href="/logout" class="nav-logout">Logout</a>
-    </div>
+<a class="nav-logo" href="/student/homepage">Team<span>Match</span></a>
+<div class="nav-actions">
+    <a href="/student/homepage" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Dashboard
+    </a>
+    <a href="/logout" class="nav-logout">Logout</a>
+</div>
 </nav>
 
 <!-- ══ COVER ═══════════════════════════════════════ -->
 <div class="cover-band">
-    <div class="cover-noise"></div>
-    <div class="cover-grid"></div>
+<div class="cover-noise"></div>
+<div class="cover-grid"></div>
 </div>
 
 <!-- ══ PAGE SHELL ══════════════════════════════════ -->
 <div class="page-shell">
 
-    <!-- ── SIDEBAR ──────────────────────────────── -->
-    <aside class="sidebar">
+<!-- ── SIDEBAR ──────────────────────────────── -->
+<aside class="sidebar">
 
-        <!-- Identity card -->
-        <div class="id-card">
-            <div class="avatar-wrap">
-                <div class="avatar">
-                    <% if (student.profile_photo) { %>
-                        <img src="<%= student.profile_photo %>" alt="Profile Photo">
-                    <% } else { %>
-                        <span><%= student.full_name ? student.full_name.charAt(0).toUpperCase() : "S" %></span>
-                    <% } %>
-                </div>
-                <div class="avatar-status"></div>
+    <!-- Identity card -->
+    <div class="id-card">
+        <div class="avatar-wrap">
+            <div class="avatar">
+                <% if (student.profile_photo) { %>
+                    <img src="<%= student.profile_photo %>" alt="Profile Photo">
+                <% } else { %>
+                    <span><%= student.full_name ? student.full_name.charAt(0).toUpperCase() : "S" %></span>
+                <% } %>
             </div>
+            <div class="avatar-status"></div>
+        </div>
 
-            <h1 class="id-name"><%= student.full_name %></h1>
-            <p class="id-dept"><%= student.department_name %></p>
+        <h1 class="id-name"><%= student.full_name %></h1>
+        <p class="id-dept"><%= student.department_name %></p>
 
-            <div class="id-email">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <%= student.email %>
+        <div class="id-email">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <%= student.email %>
+        </div>
+
+        <div class="id-badges">
+            <span class="id-badge badge-blue">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <%= student.department_name %>
+            </span>
+            <span class="id-badge badge-amber">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Student
+            </span>
+        </div>
+
+        <div class="id-divider"></div>
+
+        <div class="id-stats">
+            <div class="id-stat">
+                <strong id="skillCount">—</strong>
+                <span>Skills</span>
             </div>
-
-            <div class="id-badges">
-                <span class="id-badge badge-blue">
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                    <%= student.department_name %>
-                </span>
-                <span class="id-badge badge-amber">
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Student
-                </span>
+            <div class="id-stat-div"></div>
+            <div class="id-stat">
+                <strong>Active</strong>
+                <span>Status</span>
             </div>
+            <div class="id-stat-div"></div>
+            <div class="id-stat">
+                <strong>Student</strong>
+                <span>Role</span>
+            </div>
+        </div>
+    </div>
 
-            <div class="id-divider"></div>
+    <!-- Account details -->
+    <div class="side-card">
+        <div class="side-card-head">
+            <div class="sch-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span>Account Details</span>
+        </div>
+        <div class="detail-rows">
+            <div class="detail-row">
+                <span class="dr-label">Full Name</span>
+                <span class="dr-val"><%= student.full_name %></span>
+            </div>
+            <div class="detail-row">
+                <span class="dr-label">Email</span>
+                <span class="dr-val dr-email"><%= student.email %></span>
+            </div>
+            <div class="detail-row">
+                <span class="dr-label">Department</span>
+                <span class="dr-val"><%= student.department_name %></span>
+            </div>
+            <div class="detail-row">
+                <span class="dr-label">Role</span>
+                <span class="dr-val dr-role">Student</span>
+            </div>
+        </div>
+    </div>
 
-            <div class="id-stats">
-                <div class="id-stat">
-                    <strong id="skillCount">—</strong>
-                    <span>Skills</span>
+    <!-- Security card -->
+    <div class="side-card security-card">
+        <div class="side-card-head">
+            <div class="sch-icon sch-icon-lock">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <span>Security</span>
+        </div>
+        <p class="security-hint">Keep your account secure. Use a strong, unique password and update it regularly.</p>
+        <button type="button" class="btn-change-pw" id="openPwModal">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Change Password
+        </button>
+    </div>
+
+</aside>
+
+<!-- ── MAIN CONTENT ──────────────────────────── -->
+<main class="main-content">
+
+    <!-- Bio & Skills form -->
+    <div class="main-card">
+        <div class="mc-head">
+            <div class="mc-head-left">
+                <div class="mc-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 </div>
-                <div class="id-stat-div"></div>
-                <div class="id-stat">
-                    <strong>Active</strong>
-                    <span>Status</span>
-                </div>
-                <div class="id-stat-div"></div>
-                <div class="id-stat">
-                    <strong>Student</strong>
-                    <span>Role</span>
+                <div>
+                    <h2 class="mc-title">Edit Profile</h2>
+                    <p class="mc-sub">Update your bio and skill set</p>
                 </div>
             </div>
         </div>
 
-        <!-- Account details -->
-        <div class="side-card">
-            <div class="side-card-head">
-                <div class="sch-icon">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="mc-body">
+            <form action="/student/profile/update" method="POST" id="profileForm">
+
+                <div class="form-section">
+                    <label class="form-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        About You
+                    </label>
+                    <textarea
+                        name="bio"
+                        id="bioField"
+                        rows="6"
+                        class="form-textarea"
+                        placeholder="Describe your background, interests, and what you bring to a team..."><%= student.bio || "" %></textarea>
+                    <div class="char-counter"><span id="bioCount">0</span> characters</div>
                 </div>
-                <span>Account Details</span>
+
+                <div class="form-section">
+                    <label class="form-label">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Skills
+                    </label>
+                    <div class="skills-input-wrap">
+                        <input
+                            type="text"
+                            name="skills"
+                            id="skillsField"
+                            class="form-input"
+                            value="<%= student.skills || '' %>"
+                            placeholder="e.g. React, Machine Learning, UI Design">
+                    </div>
+                    <p class="input-hint">Separate each skill with a comma — they'll appear as tags below.</p>
+                    <div class="skills-preview" id="skillsPreview"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Skills summary card (read-only) -->
+    <div class="main-card skills-summary-card" id="skillsSummaryCard">
+        <div class="mc-head">
+            <div class="mc-head-left">
+                <div class="mc-icon mc-icon-green">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div>
+                    <h2 class="mc-title">Your Skills</h2>
+                    <p class="mc-sub">Live preview of how others see your skills</p>
+                </div>
             </div>
-            <div class="detail-rows">
-                <div class="detail-row">
-                    <span class="dr-label">Full Name</span>
-                    <span class="dr-val"><%= student.full_name %></span>
-                </div>
-                <div class="detail-row">
-                    <span class="dr-label">Email</span>
-                    <span class="dr-val dr-email"><%= student.email %></span>
-                </div>
-                <div class="detail-row">
-                    <span class="dr-label">Department</span>
-                    <span class="dr-val"><%= student.department_name %></span>
-                </div>
-                <div class="detail-row">
-                    <span class="dr-label">Role</span>
-                    <span class="dr-val dr-role">Student</span>
-                </div>
+            <span class="skills-count-badge" id="skillsBadgeCount">0 skills</span>
+        </div>
+        <div class="mc-body">
+            <div class="skills-display" id="skillsDisplay">
+                <p class="skills-empty-hint">No skills added yet. Type above to get started.</p>
             </div>
         </div>
+    </div>
 
-        <!-- Security card -->
-        <div class="side-card security-card">
-            <div class="side-card-head">
-                <div class="sch-icon sch-icon-lock">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <span>Security</span>
-            </div>
-            <p class="security-hint">Keep your account secure. Use a strong, unique password and update it regularly.</p>
-            <button type="button" class="btn-change-pw" id="openPwModal">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                Change Password
-            </button>
-        </div>
-
-    </aside>
-
-    <!-- ── MAIN CONTENT ──────────────────────────── -->
-    <main class="main-content">
-
-        <!-- Bio & Skills form -->
-        <div class="main-card">
-            <div class="mc-head">
-                <div class="mc-head-left">
-                    <div class="mc-icon">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    </div>
-                    <div>
-                        <h2 class="mc-title">Edit Profile</h2>
-                        <p class="mc-sub">Update your bio and skill set</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mc-body">
-                <form action="/student/profile/update" method="POST" id="profileForm">
-
-                    <div class="form-section">
-                        <label class="form-label">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            About You
-                        </label>
-                        <textarea
-                            name="bio"
-                            id="bioField"
-                            rows="6"
-                            class="form-textarea"
-                            placeholder="Describe your background, interests, and what you bring to a team..."><%= student.bio || "" %></textarea>
-                        <div class="char-counter"><span id="bioCount">0</span> characters</div>
-                    </div>
-
-                    <div class="form-section">
-                        <label class="form-label">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            Skills
-                        </label>
-                        <div class="skills-input-wrap">
-                            <input
-                                type="text"
-                                name="skills"
-                                id="skillsField"
-                                class="form-input"
-                                value="<%= student.skills || '' %>"
-                                placeholder="e.g. React, Machine Learning, UI Design">
-                        </div>
-                        <p class="input-hint">Separate each skill with a comma — they'll appear as tags below.</p>
-                        <div class="skills-preview" id="skillsPreview"></div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn-save">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                            Save Changes
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-
-        <!-- Skills summary card (read-only) -->
-        <div class="main-card skills-summary-card" id="skillsSummaryCard">
-            <div class="mc-head">
-                <div class="mc-head-left">
-                    <div class="mc-icon mc-icon-green">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    </div>
-                    <div>
-                        <h2 class="mc-title">Your Skills</h2>
-                        <p class="mc-sub">Live preview of how others see your skills</p>
-                    </div>
-                </div>
-                <span class="skills-count-badge" id="skillsBadgeCount">0 skills</span>
-            </div>
-            <div class="mc-body">
-                <div class="skills-display" id="skillsDisplay">
-                    <p class="skills-empty-hint">No skills added yet. Type above to get started.</p>
-                </div>
-            </div>
-        </div>
-
-    </main>
+</main>
 
 </div>
 
 <!-- ══ CHANGE PASSWORD MODAL ════════════════════════ -->
 <div class="modal-overlay" id="pwModal" aria-modal="true" role="dialog" aria-labelledby="pw-modal-title">
-    <div class="pw-modal">
+<div class="pw-modal">
 
-        <div class="pw-modal-header">
-            <div class="pw-modal-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <div class="pw-modal-header">
+        <div class="pw-modal-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+            <h2 class="pw-modal-title" id="pw-modal-title">Change Password</h2>
+            <p class="pw-modal-sub">Enter your current password to continue</p>
+        </div>
+        <button class="pw-modal-close" id="closePwModal" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <form action="/student/profile/change-password" method="POST" id="pwForm" novalidate>
+
+        <div class="pw-field-group">
+            <label class="pw-label">Current Password</label>
+            <div class="pw-input-wrap">
+                <svg class="pw-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input type="password" name="currentPassword" id="currentPassword" class="pw-input" placeholder="Enter your current password" required autocomplete="current-password">
+                <button type="button" class="pw-toggle" data-target="currentPassword" aria-label="Toggle visibility">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
             </div>
-            <div>
-                <h2 class="pw-modal-title" id="pw-modal-title">Change Password</h2>
-                <p class="pw-modal-sub">Enter your current password to continue</p>
+            <span class="pw-field-error" id="err-current"></span>
+        </div>
+
+        <div class="pw-divider">
+            <span>New Password</span>
+        </div>
+
+        <div class="pw-field-group">
+            <label class="pw-label">New Password</label>
+            <div class="pw-input-wrap">
+                <svg class="pw-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                <input type="password" name="newPassword" id="newPassword" class="pw-input" placeholder="At least 8 characters" required autocomplete="new-password">
+                <button type="button" class="pw-toggle" data-target="newPassword" aria-label="Toggle visibility">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
             </div>
-            <button class="pw-modal-close" id="closePwModal" aria-label="Close">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <!-- Strength meter -->
+            <div class="pw-strength-bar">
+                <div class="pw-strength-fill" id="strengthFill"></div>
+            </div>
+            <span class="pw-strength-label" id="strengthLabel"></span>
+            <span class="pw-field-error" id="err-new"></span>
+        </div>
+
+        <div class="pw-field-group">
+            <label class="pw-label">Confirm New Password</label>
+            <div class="pw-input-wrap">
+                <svg class="pw-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <input type="password" name="confirmPassword" id="confirmPassword" class="pw-input" placeholder="Repeat new password" required autocomplete="new-password">
+                <button type="button" class="pw-toggle" data-target="confirmPassword" aria-label="Toggle visibility">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </div>
+            <span class="pw-field-error" id="err-confirm"></span>
+        </div>
+
+        <div class="pw-modal-actions">
+            <button type="button" class="btn-pw-cancel" id="cancelPwModal">Cancel</button>
+            <button type="submit" class="btn-pw-submit" id="pwSubmitBtn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Update Password
             </button>
         </div>
 
-        <form action="/student/profile/change-password" method="POST" id="pwForm" novalidate>
-
-            <div class="pw-field-group">
-                <label class="pw-label">Current Password</label>
-                <div class="pw-input-wrap">
-                    <svg class="pw-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <input type="password" name="currentPassword" id="currentPassword" class="pw-input" placeholder="Enter your current password" required autocomplete="current-password">
-                    <button type="button" class="pw-toggle" data-target="currentPassword" aria-label="Toggle visibility">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <span class="pw-field-error" id="err-current"></span>
-            </div>
-
-            <div class="pw-divider">
-                <span>New Password</span>
-            </div>
-
-            <div class="pw-field-group">
-                <label class="pw-label">New Password</label>
-                <div class="pw-input-wrap">
-                    <svg class="pw-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                    <input type="password" name="newPassword" id="newPassword" class="pw-input" placeholder="At least 8 characters" required autocomplete="new-password">
-                    <button type="button" class="pw-toggle" data-target="newPassword" aria-label="Toggle visibility">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <!-- Strength meter -->
-                <div class="pw-strength-bar">
-                    <div class="pw-strength-fill" id="strengthFill"></div>
-                </div>
-                <span class="pw-strength-label" id="strengthLabel"></span>
-                <span class="pw-field-error" id="err-new"></span>
-            </div>
-
-            <div class="pw-field-group">
-                <label class="pw-label">Confirm New Password</label>
-                <div class="pw-input-wrap">
-                    <svg class="pw-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    <input type="password" name="confirmPassword" id="confirmPassword" class="pw-input" placeholder="Repeat new password" required autocomplete="new-password">
-                    <button type="button" class="pw-toggle" data-target="confirmPassword" aria-label="Toggle visibility">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <span class="pw-field-error" id="err-confirm"></span>
-            </div>
-
-            <div class="pw-modal-actions">
-                <button type="button" class="btn-pw-cancel" id="cancelPwModal">Cancel</button>
-                <button type="submit" class="btn-pw-submit" id="pwSubmitBtn">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    Update Password
-                </button>
-            </div>
-
-        </form>
-    </div>
+    </form>
+</div>
 </div>
 
 <!-- ══ TOAST ════════════════════════════════════════ -->
 <div class="toast" id="toast">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    Profile saved successfully!
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+Profile saved successfully!
 </div>
 
 <!-- ══ FOOTER ═══════════════════════════════════════ -->
 <footer class="footer">
-    <div class="footer-inner">
-        <span class="footer-logo">Team<span>Match</span></span>
-        <span class="footer-copy">University Project Collaboration Platform</span>
-    </div>
+<div class="footer-inner">
+    <span class="footer-logo">Team<span>Match</span></span>
+    <span class="footer-copy">University Project Collaboration Platform</span>
+</div>
 </footer>
 
 <script>
@@ -319,19 +319,19 @@ const skillCount    = document.getElementById('skillCount');
 const skillsBadge   = document.getElementById('skillsBadgeCount');
 
 function renderSkills(val) {
-    const pills = val.split(',').map(s => s.trim()).filter(Boolean);
-    const count = pills.length;
+const pills = val.split(',').map(s => s.trim()).filter(Boolean);
+const count = pills.length;
 
-    skillCount.textContent = count || '—';
-    skillsBadge.textContent = count + (count === 1 ? ' skill' : ' skills');
+skillCount.textContent = count || '—';
+skillsBadge.textContent = count + (count === 1 ? ' skill' : ' skills');
 
-    const makeTag = (s, cls) =>
-        `<span class="${cls}">${s}</span>`;
+const makeTag = (s, cls) =>
+    `<span class="${cls}">${s}</span>`;
 
-    skillsPreview.innerHTML = pills.map(s => makeTag(s, 'skill-tag-sm')).join('');
-    skillsDisplay.innerHTML = count
-        ? pills.map(s => makeTag(s, 'skill-tag-lg')).join('')
-        : '<p class="skills-empty-hint">No skills added yet. Type above to get started.</p>';
+skillsPreview.innerHTML = pills.map(s => makeTag(s, 'skill-tag-sm')).join('');
+skillsDisplay.innerHTML = count
+    ? pills.map(s => makeTag(s, 'skill-tag-lg')).join('')
+    : '<p class="skills-empty-hint">No skills added yet. Type above to get started.</p>';
 }
 
 renderSkills(skillsField.value);
@@ -348,8 +348,8 @@ bioField.addEventListener('input', updateBioCount);
 const profileForm = document.getElementById('profileForm');
 const toast       = document.getElementById('toast');
 profileForm.addEventListener('submit', () => {
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
+toast.classList.add('show');
+setTimeout(() => toast.classList.remove('show'), 3000);
 });
 
 /* ── Password modal ──────────────────────────────── */
@@ -359,16 +359,16 @@ const closeBtn    = document.getElementById('closePwModal');
 const cancelBtn   = document.getElementById('cancelPwModal');
 
 function openModal() {
-    pwModal.classList.add('is-visible');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('currentPassword').focus();
+pwModal.classList.add('is-visible');
+document.body.style.overflow = 'hidden';
+document.getElementById('currentPassword').focus();
 }
 function closeModal() {
-    pwModal.classList.remove('is-visible');
-    document.body.style.overflow = '';
-    document.getElementById('pwForm').reset();
-    clearErrors();
-    resetStrength();
+pwModal.classList.remove('is-visible');
+document.body.style.overflow = '';
+document.getElementById('pwForm').reset();
+clearErrors();
+resetStrength();
 }
 
 openBtn.addEventListener('click', openModal);
@@ -379,10 +379,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 /* ── Toggle password visibility ──────────────────── */
 document.querySelectorAll('.pw-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const input = document.getElementById(btn.dataset.target);
-        input.type = input.type === 'password' ? 'text' : 'password';
-    });
+btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.target);
+    input.type = input.type === 'password' ? 'text' : 'password';
+});
 });
 
 /* ── Password strength meter ─────────────────────── */
@@ -391,31 +391,31 @@ const strengthFill = document.getElementById('strengthFill');
 const strengthLbl  = document.getElementById('strengthLabel');
 
 function getStrength(pw) {
-    let score = 0;
-    if (pw.length >= 8)  score++;
-    if (pw.length >= 12) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-    return score;
+let score = 0;
+if (pw.length >= 8)  score++;
+if (pw.length >= 12) score++;
+if (/[A-Z]/.test(pw)) score++;
+if (/[0-9]/.test(pw)) score++;
+if (/[^A-Za-z0-9]/.test(pw)) score++;
+return score;
 }
 
 function resetStrength() {
-    strengthFill.style.width = '0%';
-    strengthFill.className = 'pw-strength-fill';
-    strengthLbl.textContent = '';
+strengthFill.style.width = '0%';
+strengthFill.className = 'pw-strength-fill';
+strengthLbl.textContent = '';
 }
 
 newPwInput.addEventListener('input', () => {
-    const val   = newPwInput.value;
-    const score = val.length ? getStrength(val) : 0;
-    const pct   = [0, 20, 40, 60, 80, 100][score];
-    const labels = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
-    const cls    = ['', 'str-1', 'str-2', 'str-3', 'str-4', 'str-5'];
+const val   = newPwInput.value;
+const score = val.length ? getStrength(val) : 0;
+const pct   = [0, 20, 40, 60, 80, 100][score];
+const labels = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+const cls    = ['', 'str-1', 'str-2', 'str-3', 'str-4', 'str-5'];
 
-    strengthFill.style.width = pct + '%';
-    strengthFill.className = 'pw-strength-fill ' + (cls[score] || '');
-    strengthLbl.textContent = labels[score] || '';
+strengthFill.style.width = pct + '%';
+strengthFill.className = 'pw-strength-fill ' + (cls[score] || '');
+strengthLbl.textContent = labels[score] || '';
 });
 
 /* ── Real-time inline validation ────────────────── */
@@ -423,73 +423,73 @@ const curPwInput  = document.getElementById('currentPassword');
 const confPwInput = document.getElementById('confirmPassword');
 
 function setError(inputEl, errId, msg) {
-    const errEl = document.getElementById(errId);
-    errEl.textContent = msg;
-    if (msg) { inputEl.classList.add('input-error'); }
-    else      { inputEl.classList.remove('input-error'); }
+const errEl = document.getElementById(errId);
+errEl.textContent = msg;
+if (msg) { inputEl.classList.add('input-error'); }
+else      { inputEl.classList.remove('input-error'); }
 }
 
 function clearErrors() {
-    setError(curPwInput,  'err-current', '');
-    setError(newPwInput,  'err-new',     '');
-    setError(confPwInput, 'err-confirm', '');
+setError(curPwInput,  'err-current', '');
+setError(newPwInput,  'err-new',     '');
+setError(confPwInput, 'err-confirm', '');
 }
 
 /* Current password — validate on blur, clear on type */
 curPwInput.addEventListener('blur', () => {
-    if (!curPwInput.value.trim())
-        setError(curPwInput, 'err-current', 'Please enter your current password.');
+if (!curPwInput.value.trim())
+    setError(curPwInput, 'err-current', 'Please enter your current password.');
 });
 curPwInput.addEventListener('input', () => {
-    if (curPwInput.value.trim())
-        setError(curPwInput, 'err-current', '');
+if (curPwInput.value.trim())
+    setError(curPwInput, 'err-current', '');
 });
 
 /* New password — validate length on blur, clear when long enough */
 newPwInput.addEventListener('blur', () => {
-    if (newPwInput.value && newPwInput.value.length < 8)
-        setError(newPwInput, 'err-new', 'New password must be at least 8 characters.');
+if (newPwInput.value && newPwInput.value.length < 8)
+    setError(newPwInput, 'err-new', 'New password must be at least 8 characters.');
 });
 newPwInput.addEventListener('input', () => {
-    if (newPwInput.value.length >= 8)
-        setError(newPwInput, 'err-new', '');
-    /* Re-check confirm match live if user already typed there */
-    if (confPwInput.value) {
-        if (confPwInput.value !== newPwInput.value)
-            setError(confPwInput, 'err-confirm', 'Passwords do not match.');
-        else
-            setError(confPwInput, 'err-confirm', '');
-    }
+if (newPwInput.value.length >= 8)
+    setError(newPwInput, 'err-new', '');
+/* Re-check confirm match live if user already typed there */
+if (confPwInput.value) {
+    if (confPwInput.value !== newPwInput.value)
+        setError(confPwInput, 'err-confirm', 'Passwords do not match.');
+    else
+        setError(confPwInput, 'err-confirm', '');
+}
 });
 
 /* Confirm password — validate match live */
 confPwInput.addEventListener('input', () => {
-    if (confPwInput.value && confPwInput.value !== newPwInput.value)
-        setError(confPwInput, 'err-confirm', 'Passwords do not match.');
-    else
-        setError(confPwInput, 'err-confirm', '');
+if (confPwInput.value && confPwInput.value !== newPwInput.value)
+    setError(confPwInput, 'err-confirm', 'Passwords do not match.');
+else
+    setError(confPwInput, 'err-confirm', '');
 });
 confPwInput.addEventListener('blur', () => {
-    if (confPwInput.value && confPwInput.value !== newPwInput.value)
-        setError(confPwInput, 'err-confirm', 'Passwords do not match.');
+if (confPwInput.value && confPwInput.value !== newPwInput.value)
+    setError(confPwInput, 'err-confirm', 'Passwords do not match.');
 });
 
 /* Final gate on submit */
 document.getElementById('pwForm').addEventListener('submit', function(e) {
-    let valid = true;
-    if (!curPwInput.value.trim()) {
-        setError(curPwInput, 'err-current', 'Please enter your current password.');
-        valid = false;
-    }
-    if (newPwInput.value.length < 8) {
-        setError(newPwInput, 'err-new', 'New password must be at least 8 characters.');
-        valid = false;
-    }
-    if (confPwInput.value !== newPwInput.value) {
-        setError(confPwInput, 'err-confirm', 'Passwords do not match.');
-        valid = false;
-    }
-    if (!valid) e.preventDefault();
+let valid = true;
+if (!curPwInput.value.trim()) {
+    setError(curPwInput, 'err-current', 'Please enter your current password.');
+    valid = false;
+}
+if (newPwInput.value.length < 8) {
+    setError(newPwInput, 'err-new', 'New password must be at least 8 characters.');
+    valid = false;
+}
+if (confPwInput.value !== newPwInput.value) {
+    setError(confPwInput, 'err-confirm', 'Passwords do not match.');
+    valid = false;
+}
+if (!valid) e.preventDefault();
 });
 </script>
 

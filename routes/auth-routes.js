@@ -10,7 +10,6 @@ const {createStudentRow} = require('../mysql/students');
 const {getProjects} = require('../mysql/projects');
 const { getCategories } = require('../mysql/categories');
 
-
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 3,
