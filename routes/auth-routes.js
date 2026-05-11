@@ -10,10 +10,16 @@ const {createStudentRow} = require('../mysql/students');
 const {getProjects} = require('../mysql/projects');
 const { getCategories } = require('../mysql/categories');
 
+
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 3,
-  message : "Too many attempts"
+
+  handler: (req, res) => {
+    res.status(429).render("429", {
+      message: "Too many login attempts. Try again later."
+    });
+  }
 });
 
 function isStudent(req, res, next){
