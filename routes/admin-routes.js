@@ -15,7 +15,12 @@ const {addDepartment , getDeparments , deleteDepartment} = require('../mysql/adm
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 3,
-  message : "Too many attempts"
+  
+  handler: (req, res) => {
+    res.status(429).render("429", {
+      message: "Too many login attempts. Try again later."
+    });
+  }
 });
 
 function isAdmin(req, res, next){

@@ -44,37 +44,6 @@ authRoutes.get('/' , async(req , res , next)=>{
     
 });
 
-authRoutes.get('/projects' , isStudent , async (req , res)=>{
-    try{
-        const projects = await getProjects();
-        const categories = await getCategories();
-        if(!projects){
-            return res.status(500).send('Internal issues ..');
-        }
-
-        return res.render("show-projects" , {
-            projects : projects,
-            categories : categories
-    });
-    }catch(e){
-        console.log(e.message);
-        return res.status(500).render("500");
-    }
-    
-});
-
-authRoutes.get('/find/advisor' , isStudent ,  async(req , res)=>{
-
-    try{
-        const advisors = await getAdvisors();
-        return res.render("find-advisors" , {
-            advisors : advisors
-        });
-    }catch(e){
-        console.log(`Error : ${e.message}`);
-    }
-});
-
 authRoutes.get('/login' ,(req , res)=>{
     try{
         return res.render("login" , {
