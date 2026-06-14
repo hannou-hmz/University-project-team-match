@@ -71,7 +71,7 @@ Other Middleware
 ### Password Reset System
 This project includes a secure password reset feature that allows users to recover access to their accounts through email verification.
 
-##How It Works:
+How It Works:
 - The user requests a password reset using their registered email address.
 - The system checks whether a previous reset code exists for the user. If one exists, it is deleted before generating a new code.
 - A new 6-digit verification code is generated.
@@ -89,11 +89,6 @@ This project includes a secure password reset feature that allows users to recov
 - Rate limiting restricts password reset requests to a maximum of 5 attempts.
 - Used verification codes are immediately removed from the database.
 - Users must successfully verify ownership of their email address before changing their password.
-
-##Technologies Used:
-- Nodemailer
-- bcrypt
-- Express Rate Limit
 
 ---
 
