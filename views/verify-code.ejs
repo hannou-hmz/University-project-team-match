@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Code · TeamMatch</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/auth-styling/reset.css" />
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- Brand -->
+    <div class="brand">Team<span>Match</span></div>
+
+    <!-- Heading -->
+    <div class="page-top">
+      <div class="page-title">Check your email</div>
+      <div class="page-sub">
+        We sent a 6-digit code to <strong><%= typeof email !== 'undefined' ? email : 'your email' %></strong>
+      </div>
+    </div>
+
+    <!-- Form card -->
+    <div class="form-card">
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error-msg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span><%= error %></span>
+        </div>
+      <% } %>
+
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="success-msg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span><%= success %></span>
+        </div>
+      <% } %>
+
+      <form action="/verify-code/<%= userId%>" method="POST" id="verify-form" novalidate>
+
+        <input type="hidden" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" />
+
+        <!-- Verification Code -->
+        <div class="field-group">
+          <label class="field-label" for="otp-0" style="text-align:center; display:block;">Verification Code</label>
+
+          <div class="otp-group">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp-0" data-index="0" autocomplete="one-time-code" />
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp-1" data-index="1" />
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp-2" data-index="2" />
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp-3" data-index="3" />
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp-4" data-index="4" />
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp-5" data-index="5" />
+          </div>
+
+          <input type="hidden" name="code" id="code" />
+
+          <div class="field-error" id="code-error" style="justify-content:center;">Enter the 6-digit code from your email.</div>
+        </div>
+
+        <!-- Resend code -->
+        <div class="resend-row">
+          Didn't get a code?
+          <button type="button" class="resend-link" id="resend-btn">Resend</button>
+        </div>
+
+        <button type="submit" class="signin-btn">Verify Code</button>
+
+      </form>
+
+      <!-- Back link -->
+      <div class="back-link" style="text-align: center;">
+        <a href="/forgot-password">
+          <button type="button" class="back-btn">&larr; Use a different email</button>
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let inputs = Array.from(document.querySelectorAll('.otp-input'));
+    let hiddenCode = document.getElementById('code');
+
+    function updateHiddenCode() {
+      hiddenCode.value = inputs.map(function (i) { return i.value; }).join('');
+    }
+
+    inputs.forEach(function (input, idx) {
+      input.addEventListener('input', function () {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        if (input.value && idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+        }
+        updateHiddenCode();
+      });
+
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !input.value && idx > 0) {
+          inputs[idx - 1].focus();
+        }
+      });
+
+      input.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var pasted = (e.clipboardData || window.clipboardData).getData('text').trim();
+        var digits = pasted.replace(/[^0-9]/g, '').split('');
+        digits.forEach(function (digit, i) {
+          if (inputs[i]) inputs[i].value = digit;
+        });
+        var next = Math.min(digits.length, inputs.length - 1);
+        inputs[next].focus();
+        updateHiddenCode();
+      });
+    });
+
+    // Resend code with cooldown
+    let resendBtn = document.getElementById('resend-btn');
+    let cooldown = 0;
+
+    resendBtn.addEventListener('click', function () {
+      if (cooldown > 0) return;
+
+      // TODO: trigger resend request to the server here
+
+      cooldown = 30;
+      resendBtn.disabled = true;
+      let original = resendBtn.textContent;
+
+      let timer = setInterval(function () {
+        resendBtn.textContent = 'Resend in ' + cooldown + 's';
+        cooldown--;
+        if (cooldown < 0) {
+          clearInterval(timer);
+          resendBtn.disabled = false;
+          resendBtn.textContent = original;
+        }
+      }, 1000);
+    });
+
+    // Validate before submit
+    document.getElementById('verify-form').addEventListener('submit', function (e) {
+      updateHiddenCode();
+      let codeError = document.getElementById('code-error');
+      codeError.classList.remove('visible');
+      inputs.forEach(function (i) { i.classList.remove('input-invalid'); });
+
+      if (hiddenCode.value.length !== 6) {
+        codeError.classList.add('visible');
+        inputs.forEach(function (i) { if (!i.value) i.classList.add('input-invalid'); });
+        e.preventDefault();
+      }
+    });
+
+    // Autofocus first box
+    inputs[0].focus();
+  </script>
+
+</body>
+</html>

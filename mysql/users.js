@@ -1,6 +1,6 @@
 const database = require('./db');
 const bcrypt = require('bcrypt');
-const SALT_COUNT = 8;
+const SALT_COUNT = 10;
 
 async function createUser(role , full_name , age , email , department , password){
     try{
@@ -192,6 +192,19 @@ async function changeUserRole(role , userId){
     }
 }
 
+async function getUserByEmail(email){
+    try{
+        const sql = "SELECT user_id , email FROM users WHERE email = ?"
+        const [row] = await database.pool.execute(sql , [email])
+        
+        return row[0]
+
+    }catch(e){
+        console.log(e.message)
+        throw e
+    }
+}
+
 
 
 module.exports = {
@@ -206,5 +219,6 @@ module.exports = {
     deleteUsers,
     changeUserRole,
     getUserByEmail,
-    changeUserPassword
+    changeUserPassword,
+    getUserByEmail
 }

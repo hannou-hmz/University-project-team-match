@@ -5,14 +5,15 @@ const authRoutes = express.Router();
 const db = require('../mysql/db');
 const nodemailer = require('nodemailer');
 const {getAdvisors , createAdvisorRow} = require('../mysql/advisors');
-const {createUser , getUser , resetPassword} = require('../mysql/users');
+const {createUser , getUser , resetPassword , getUserByEmail} = require('../mysql/users');
 const {createStudentRow} = require('../mysql/students');
 const {getProjects} = require('../mysql/projects');
 const { getCategories } = require('../mysql/categories');
+const {storeCode , getCode , checkCode , deleteCode} = require('../mysql/tempCode')
 
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 3,
+  max: 5,
 
   handler: (req, res) => {
     res.status(429).render("429", {
@@ -20,6 +21,35 @@ const loginLimiter = rateLimit({
     });
   }
 });
+
+async function sendmail(sendTo){
+    try{
+        const code = Math.floor(100000 + Math.random() * 900000);
+        const myEmail = 'hhannou06@gmail.com';
+        const transporter = nodemailer.createTransport({
+            service : 'gmail',
+            auth : {
+                user : myEmail,
+                pass : 'jkjq rgdj xoqm vhqq'
+            }
+        })
+
+        const mailOptions = {
+            from : myEmail,
+            to : sendTo,
+            subject: 'Verification code' ,
+            html : `<h1>Your verification code is: ${code}</h1>
+                    <p>This code will expire in 5 minute.</p>`
+        } 
+
+        const infos = await transporter.sendMail(mailOptions);
+        console.log('infos : ' , infos.messageId);
+        return code;
+    
+    }catch(e){
+        return e.message;
+    }    
+}
 
 function isStudent(req, res, next){
     if(!req.session.studentId){
@@ -43,6 +73,70 @@ authRoutes.get('/' , async(req , res , next)=>{
     }
     
 });
+
+authRoutes.get('/reset-password' , loginLimiter , (req , res)=>{
+    try{
+        return res.render("forgot-password")
+    }catch(e){
+        console.log(e.message)
+        return res.status(500).render("500")
+    }
+})
+
+authRoutes.post('/reset-password' , loginLimiter , async(req , res)=>{
+    try{
+        const {email} = req.body
+        const user = await getUserByEmail(email) 
+
+        if(!user){
+            console.log(`Invalid email !!`)
+            return res.status(401).redirect('/login')
+        }
+
+        const userId = user.user_id
+        const originalCode = await sendmail(email)
+        const store = await storeCode(userId , email , String(originalCode))
+
+        console.log(`Code sent is : ${originalCode}`)
+        return res.redirect(`/verify-code/${userId}`)
+
+    }catch(e){
+        console.log(e.message)
+        return res.status(500).render('500')
+    }
+})
+
+authRoutes.get('/verify-code/:id' , (req , res)=>{
+    try{
+        const userId = req.params.id
+        return res.render("verify-code" , {
+            userId : userId
+        })
+    }catch(e){
+        console.log(e.message)
+        return res.status(500).render("500")
+    }
+})
+
+authRoutes.post('/verify-code/:id' , async(req , res)=>{
+    try{
+        const userId = req.params.id
+        const receivedCode = req.body.code
+        const isValid = await checkCode(userId , receivedCode)
+
+        if(!isValid){
+            console.log(`Code never match !!`)
+            return res.status(401).redirect(`/verify-code/${userId}`)
+        }
+        
+        await deleteCode(userId)
+        return res.status(200).redirect('/login')
+        
+    }catch(e){
+        console.log(e.message)
+        return res.status(500)
+    }
+})
 
 authRoutes.get('/login' ,(req , res)=>{
     try{
