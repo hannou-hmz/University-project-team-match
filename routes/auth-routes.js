@@ -33,7 +33,7 @@ async function sendmail(sendTo){
                 pass : 'jkjq rgdj xoqm vhqq'
             }
         })
-
+        
         const mailOptions = {
             from : myEmail,
             to : sendTo,
