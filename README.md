@@ -68,7 +68,7 @@ Other Middleware
 - Manage user roles
 - Control platform data
 
-### Password Reset System
+### 🔐 Password Reset System
 This project includes a secure password reset feature that allows users to recover access to their accounts through email verification.
 
 How It Works:
