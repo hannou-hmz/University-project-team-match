@@ -21,9 +21,27 @@ The system aims to simplify collaboration and improve the quality of student pro
 
 ---
 
-## 🚀 Live Demo
-You can try the project here:  
-https://your-railway-app-link
+## 🧑‍💻 Tech Stack
+Frontend:
+- EJS (templating engine)
+- CSS
+- JavaScript
+
+Backend:
+- Node.js
+- Express.js
+- MySQL
+
+Authentication & Security:
+- bcrypt (password hashing)
+- express-session / cookies (session management)
+- rate limiter (brute-force protection)
+
+Email Service
+- Nodemailer (sending verification / reset emails)
+  
+Other Middleware
+- method-override (HTTP method support for forms)
 
 ## 📌 How it works
 - Sign up as a student or instructor
@@ -50,18 +68,33 @@ https://your-railway-app-link
 - Manage user roles
 - Control platform data
 
----
+### Password Reset System
+This project includes a secure password reset feature that allows users to recover access to their accounts through email verification.
 
-## 🧑‍💻 Tech Stack
+##How It Works:
+- The user requests a password reset using their registered email address.
+- The system checks whether a previous reset code exists for the user. If one exists, it is deleted before generating a new code.
+- A new 6-digit verification code is generated.
+- The verification code is hashed using bcrypt before being stored in the database.
+- The code is sent to the user's email using Nodemailer.
+- The user enters the received code to verify their identity.
+- Verification codes expire after 5 minutes.
+- Failed verification attempts are limited to reduce brute-force attacks.
+- After successful verification, the reset code is deleted and the user is allowed to create a new password.
+- Once the password is successfully updated, the reset process is completed.
+- Security Measures
+- Only one active reset code is allowed per user.
+- Reset codes are stored as bcrypt hashes rather than plain text.
+- Verification codes automatically expire after 5 minutes.
+- Rate limiting restricts password reset requests to a maximum of 5 attempts.
+- Used verification codes are immediately removed from the database.
+- Users must successfully verify ownership of their email address before changing their password.
 
-| Layer      | Technology        |
-|------------|------------------|
-| Frontend   | EJS, HTML, CSS   |
-| Backend    | Node.js, Express |
-| Database   | MySQL            |
-| Auth       | Sessions         |
-| Encryption | Bcrypt           |
-|
+##Technologies Used:
+- Nodemailer
+- bcrypt
+- Express Rate Limit
+
 ---
 
 ## 🗄️ Database Structure
