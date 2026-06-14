@@ -19,9 +19,9 @@ async function getCode(userId){
     try{
         const sql = "SELECT code FROM temp_code WHERE issuer_id = ?"
         const [result] = await database.pool.execute(sql , [userId])
-
-        return result[0];
-
+    
+        return result[0] ?? null // If result[0] is not null or undefined, return it. Otherwise, return null.
+        
     }catch(e){
         console.log(e.message)
         throw e

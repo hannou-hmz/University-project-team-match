@@ -94,10 +94,20 @@ authRoutes.post('/reset-password' , loginLimiter , async(req , res)=>{
         }
 
         const userId = user.user_id
+        const isCode = await getCode(userId) 
+
+        console.log('type: ',isCode)
+        console.log('Length : ',isCode.length)
+        
+        if(isCode !== null){
+            await deleteCode(userId)
+        }
+        
         const originalCode = await sendmail(email)
         const store = await storeCode(userId , email , String(originalCode))
 
         console.log(`Code sent is : ${originalCode}`)
+
         return res.redirect(`/verify-code/${userId}`)
 
     }catch(e){
